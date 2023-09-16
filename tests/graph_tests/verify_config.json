@@ -1,0 +1,9 @@
+{
+  "iterations" : 1,
+  "update_iterations" : 3,
+  "batch_size" : 100000,
+  "range" : 0,
+  "test_init" : false,
+  "verify" : true,
+  "realistic_deletion": true
+}
