@@ -13,7 +13,7 @@ option(TEST_OUROBOROS "Test Ouroboros" True)
 option(TEST_FDG "Test FDGMalloc" False)
 option(TEST_REG "Test Register-Efficient" False)
 option(TEST_XMALLOC "Test Xmalloc" True)
-option(TEST_BETA "Test BETA" True)
+option(TEST_GAL "Test Gallatin" True)
 
 if(SYNC_BUILD)
 set(TEST_CUDA OFF)
@@ -34,9 +34,9 @@ endif()
 # set(TEST_FDG ON)
 # set(TEST_REG ON)
 # set(TEST_XMALLOC ON)
-# set(TEST_BETA ON)
+# set(TEST_GAL ON)
 
-#debug - test only BETA
+#debug - test only us
 set(TEST_CUDA OFF)
 set(TEST_HALLOC OFF)
 set(TEST_SCATTERALLOC OFF)
@@ -44,7 +44,7 @@ set(TEST_OUROBOROS OFF)
 set(TEST_FDG OFF)
 set(TEST_REG OFF)
 set(TEST_XMALLOC OFF)
-set(TEST_BETA ON)
+set(TEST_GAL ON)
 
 
 
@@ -82,20 +82,20 @@ endif()
 ##########################################################################
 ##########################################################################
 ##########################################################################
-# BETA
+# Gallatin
 ##########################################################################
 ##########################################################################
 ##########################################################################
 
-if (TEST_BETA)
+if (TEST_GAL)
 
 	add_executable(b_alloc_test
 		perf_allocation.cu
 	)
 
-	target_compile_definitions(b_alloc_test PUBLIC TEST_BETA)
-	add_subdirectory(${BASE_PATH}frameworks/beta/betta ./beta)
-	target_include_directories(b_alloc_test PUBLIC ${BASE_PATH}frameworks/beta)
+	target_compile_definitions(b_alloc_test PUBLIC TEST_GAL)
+	add_subdirectory(${BASE_PATH}frameworks/gallatin/gallatin ./gallatin)
+	target_include_directories(b_alloc_test PUBLIC ${BASE_PATH}frameworks/gallatin)
 	target_link_libraries(b_alloc_test gallatin)
 
 	set_property(TARGET b_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
@@ -104,9 +104,9 @@ if (TEST_BETA)
 		perf_mixed_allocation.cu
 	)
 
-	target_compile_definitions(b_mixed_alloc_test PUBLIC TEST_BETA)
+	target_compile_definitions(b_mixed_alloc_test PUBLIC TEST_GAL)
 
-	target_include_directories(b_mixed_alloc_test PUBLIC ${BASE_PATH}frameworks/beta)
+	target_include_directories(b_mixed_alloc_test PUBLIC ${BASE_PATH}frameworks/gallatin)
 	target_link_libraries(b_mixed_alloc_test gallatin)
 
 	set_property(TARGET b_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)

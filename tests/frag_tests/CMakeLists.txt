@@ -13,7 +13,7 @@ option(TEST_OUROBOROS "Test Ouroboros" True)
 option(TEST_FDG "Test FDGMalloc" False)
 option(TEST_REG "Test Register-Efficient" False)
 option(TEST_XMALLOC "Test XMalloc" True)
-option(TEST_BETA "Test BETA" True)
+option(TEST_GAL "Test Gallatin" True)
 
 if(SYNC_BUILD)
 set(TEST_CUDA OFF)
@@ -34,7 +34,7 @@ set(TEST_OUROBOROS OFF)
 set(TEST_FDG OFF)
 set(TEST_REG OFF)
 set(TEST_XMALLOC OFF)
-set(TEST_BETA ON)
+set(TEST_GAL ON)
 
 # set(TEST_CUDA ON)
 # set(TEST_HALLOC OFF)
@@ -43,7 +43,7 @@ set(TEST_BETA ON)
 # set(TEST_FDG ON)
 # set(TEST_REG ON)
 # set(TEST_XMALLOC ON)
-# set(TEST_BETA ON)
+# set(TEST_GAL ON)
 
 ##########################################################################
 ##########################################################################
@@ -82,20 +82,20 @@ endif()
 ##########################################################################
 ##########################################################################
 ##########################################################################
-# BETA
+# Gallatin
 ##########################################################################
 ##########################################################################
 ##########################################################################
 
-if (TEST_BETA)
+if (TEST_GAL)
 
 	add_executable(b_frag_test
 		frag_memory_overhead.cu
 	)
 
-	target_compile_definitions(b_frag_test PUBLIC TEST_BETA)
-	add_subdirectory(${BASE_PATH}frameworks/beta/betta ./beta)
-	target_include_directories(b_frag_test PUBLIC ${BASE_PATH}frameworks/beta)
+	target_compile_definitions(b_frag_test PUBLIC TEST_GAL)
+	add_subdirectory(${BASE_PATH}frameworks/gallatin/gallatin ./gallatin)
+	target_include_directories(b_frag_test PUBLIC ${BASE_PATH}frameworks/gallatin)
 	target_link_libraries(b_frag_test gallatin)
 
 	set_property(TARGET b_frag_test PROPERTY CUDA_ARCHITECTURES OFF)
@@ -105,8 +105,8 @@ if (TEST_BETA)
 		frag_memory_mixed.cu
 	)
 
-	target_compile_definitions(b_frag_mixed PUBLIC TEST_BETA)
-	target_include_directories(b_frag_mixed PUBLIC ${BASE_PATH}frameworks/beta)
+	target_compile_definitions(b_frag_mixed PUBLIC TEST_GAL)
+	target_include_directories(b_frag_mixed PUBLIC ${BASE_PATH}frameworks/gallatin)
 	target_link_libraries(b_frag_mixed gallatin)
 
 	set_property(TARGET b_frag_mixed PROPERTY CUDA_ARCHITECTURES OFF)

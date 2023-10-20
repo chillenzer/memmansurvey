@@ -13,10 +13,10 @@
 #include "cuda/Instance.cuh"
 using MemoryManager = MemoryManagerCUDA;
 const std::string mem_name("CUDA");
-#elif TEST_BETA
-#include "beta/Instance.cuh"
-using MemoryManager = MemoryManagerBETA;
-const std::string mem_name("BETA");
+#elif TEST_GAL
+#include "gallatin/Instance.cuh"
+using MemoryManager = MemoryManagerGal;
+const std::string mem_name("Gallatin");
 #elif TEST_HALLOC
 #include "halloc/Instance.cuh"
 using MemoryManager = MemoryManagerHalloc;
@@ -81,6 +81,9 @@ const std::string mem_name("FDGMalloc");
 	const std::string mem_name("RegEff-CFM");
 	#endif
 #endif
+
+
+#define USE_WARM 1
 
 
 template <typename MemoryManagerType, bool warp_based>
@@ -238,7 +241,11 @@ int main(int argc, char* argv[])
 	std::cout << "Going to use " << prop.name << " " << prop.major << "." << prop.minor << "\n";
 			
 	std::cout << "--- " << mem_name << "---\n";
-	//MemoryManager memory_manager(allocSizeinGB * 1024ULL * 1024ULL * 1024ULL);
+
+
+	#if USE_WARM
+		MemoryManager memory_manager(allocSizeinGB * 1024ULL * 1024ULL * 1024ULL);
+	#endif
 
 	std::vector<unsigned int> allocation_sizes(num_allocations);
 	unsigned int* d_allocation_sizes{nullptr};
@@ -270,7 +277,9 @@ int main(int argc, char* argv[])
 	for(auto i = 0; i < num_iterations; ++i)
 	{
 
-		MemoryManager memory_manager(allocSizeinGB * 1024ULL * 1024ULL * 1024ULL);
+		#if !USE_WARM
+			MemoryManager memory_manager(allocSizeinGB * 1024ULL * 1024ULL * 1024ULL);
+		#endif
 		cudaDeviceSynchronize();
 
 		std::cout << "#";
@@ -280,9 +289,9 @@ int main(int argc, char* argv[])
 		srand(i);
 		for(auto j = 0; j < num_allocations; ++j){
 			allocation_sizes[j] = Utils::alignment(offset + dis(gen) * range, sizeof(int));
-			if (allocation_sizes[j] > 4096){
-				printf("Large alloc: %u\n", allocation_sizes[j]);
-			}
+			// if (allocation_sizes[j] > 4096){
+			// 	printf("Large alloc: %u\n", allocation_sizes[j]);
+			// }
 		}
 		CHECK_ERROR(cudaMemcpy(d_allocation_sizes, allocation_sizes.data(), sizeof(unsigned int) * num_allocations, cudaMemcpyHostToDevice));
 

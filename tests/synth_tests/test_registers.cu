@@ -14,10 +14,10 @@
 #include "cuda/Instance.cuh"
 using MemoryManager = MemoryManagerCUDA;
 const std::string mem_name("CUDA");
-#elif TEST_BETA
-#include "beta/Instance.cuh"
-using MemoryManager = MemoryManagerBETA;
-const std::string mem_name("BETA");
+#elif TEST_GAL
+#include "gallatin/Instance.cuh"
+using MemoryManager = MemoryManagerGal;
+const std::string mem_name("Gallatin");
 #elif TEST_HALLOC
 #include "halloc/Instance.cuh"
 using MemoryManager = MemoryManagerHalloc;

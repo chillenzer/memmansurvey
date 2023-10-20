@@ -13,7 +13,7 @@ option(TEST_OUROBOROS "Test Ouroboros" ON)
 option(TEST_FDG "Test FDGMalloc" OFF)
 option(TEST_REG "Test Register-Efficient" OFF)
 option(TEST_XMALLOC "Test XMalloc" ON)
-option(TEST_BETA "Test BETA" ON)
+option(TEST_GAL "Test Gallatin" ON)
 
 if(SYNC_BUILD)
 set(TEST_CUDA OFF)
@@ -35,7 +35,7 @@ set(TEST_OUROBOROS OFF)
 set(TEST_FDG OFF)
 set(TEST_REG OFF)
 set(TEST_XMALLOC OFF)
-set(TEST_BETA ON)
+set(TEST_GAL ON)
 
 ##########################################################################
 ##########################################################################
@@ -68,20 +68,20 @@ endif()
 ##########################################################################
 ##########################################################################
 ##########################################################################
-# BETA
+# Gallatin
 ##########################################################################
 ##########################################################################
 ##########################################################################
 
-if (TEST_BETA)
+if (TEST_GAL)
 
 	add_executable(b_main
 		src/main.cu
 	)
 
-	target_compile_definitions(b_main PUBLIC TEST_BETA)
-	add_subdirectory(${BASE_PATH}frameworks/beta/betta)
-	target_include_directories(b_main PUBLIC ${BASE_PATH}frameworks/beta)
+	target_compile_definitions(b_main PUBLIC TEST_GAL)
+	add_subdirectory(${BASE_PATH}frameworks/gallatin/gallatin)
+	target_include_directories(b_main PUBLIC ${BASE_PATH}frameworks/gallatin)
 	target_link_libraries(b_main gallatin)
 
 	set_property(TARGET b_main PROPERTY CUDA_ARCHITECTURES OFF)
