@@ -13,3 +13,6 @@
 [submodule "frameworks/beta/betta"]
 	path = frameworks/beta/betta
 	url = https://github.com/saltsystemslab/betta
+[submodule "frameworks/gallatin/gallatin"]
+	path = frameworks/gallatin/gallatin
+	url = https://github.com/saltsystemslab/gallatin
