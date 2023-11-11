@@ -1,3 +1,7 @@
+
+##UNDER CONSTRUCTION
+This repo is being changed in preparation for PPOPP`24 Artifact Evaluation. Details and internal scripts are subject to change, check back in on November 17th for a more finalized version.
+
 # GPUMemManSurvey
 Evaluating different memory managers for dynamic GPU memory allocation.
 
@@ -14,7 +18,7 @@ The framework was tested on an A40 with architecture version sm_86 and CUDA 12.1
 
 Inside of the repo is a bash script `download_and_test.sh` that will run all of the steps below in order.
 
-On an A40, the tests take about 12 hours to complete. It is recommended to `nohup` the command to 
+On an A40, the tests take about 12 hours to complete. It is recommended to `nohup` the command  
 
 # 1. Determine your architecture code
 
