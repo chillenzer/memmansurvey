@@ -1,6 +1,49 @@
 # GPUMemManSurvey
 Evaluating different memory managers for dynamic GPU memory allocation.
 
+This is a fork of the original GPUMemManSurvey found at `https://github.com/GPUPeople/GPUMemManSurvey`.
+
+Here are the step-by-step instructions necessary to build and test Gallatin.
+
+# Requirements
+
+The framework was tested on an A40 with architecture version sm_86 and CUDA 12.1. The experiments should work for any version of CUDA 11.7 (cooperative groups and cooperative group reductions are required.). Gallatin should build and run for volta architecture, but this hasn't been tested. Performance may differ on older architectures as hardware accelleartion is not available for some instructions.
+
+
+## Option A: Bash script
+
+Inside of the repo is a bash script `download_and_test.sh` that will run all of the steps below in order.
+
+On an A40, the tests take about 12 hours to complete. It is recommended to `nohup` the command to 
+
+# 1. Determine your architecture code
+
+Go to `https://developer.nvidia.com/cuda-gpus` to determine the compute capability of your device.
+
+For example, if your device was an A10, you would have compute capability 8.6, so your version would be `86`.
+
+
+# 2. Clone/Init submodules and download graphs with LFS.
+
+  Pull a fresh clone with submodules via `--recurse-submodules` or initialize the submodules with
+
+  ```
+  git submodule init
+  git submodule update
+  ```
+
+
+  Once the repo is initialized, pull the graph files with `git lfs pull`.
+
+
+# 3. Init 
+
+
+`python testLarge --cc YOUR_VERSION`.
+
+
+
+
 # Requirements
 The framework was tested on Windows 10, Arch Linux <5.9.9> as well as Manjaro <5.4>
 * **CUDA Toolkit**

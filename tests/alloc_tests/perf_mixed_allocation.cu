@@ -83,7 +83,7 @@ const std::string mem_name("FDGMalloc");
 #endif
 
 
-#define USE_WARM 1
+#define USE_WARM 0
 
 
 template <typename MemoryManagerType, bool warp_based>

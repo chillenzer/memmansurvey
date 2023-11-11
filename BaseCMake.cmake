@@ -55,6 +55,12 @@ endif ()
 if (CC86_ASYNC)
 	string(APPEND CMAKE_CUDA_FLAGS " -gencode=arch=compute_86,code=sm_86")
 endif ()
+if (CC89_SYNC)
+	string(APPEND CMAKE_CUDA_FLAGS " -gencode=arch=compute_89,code=sm_89")
+endif ()
+if (CC90_SYNC)
+	string(APPEND CMAKE_CUDA_FLAGS " -gencode=arch=compute_90,code=sm_90")
+endif ()
 
 string(APPEND CMAKE_CUDA_FLAGS "  -Xcompiler -Wall -D_FORCE_INLINES -DVERBOSE --expt-extended-lambda -use_fast_math --expt-relaxed-constexpr")
 

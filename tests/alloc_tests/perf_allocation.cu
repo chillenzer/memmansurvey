@@ -82,7 +82,7 @@ const std::string mem_name("FDGMalloc");
 #endif
 
 
-#define USE_WARM 1
+#define USE_WARM 0
 
 template <typename MemoryManagerType, bool warp_based>
 __global__ void d_testAllocation(MemoryManagerType mm, int** verification_ptr, int num_allocations, int allocation_size)
