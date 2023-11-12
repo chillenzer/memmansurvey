@@ -1,5 +1,12 @@
 
 
+
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied"
+    exit 1
+fi
+
 echo "Building for architecture $1"
 
 echo "Updating submodules"
