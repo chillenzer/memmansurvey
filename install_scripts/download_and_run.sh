@@ -1,14 +1,16 @@
 
-echo "Starting Downloads"
+echo "Updating submodules"
 git submodule init
 git submodule update
-git lfs pull
+
+
+./install_scripts/graph_curl.sh
 
 
 
 echo "Downloads complete, compiling"
 mkdir -p build
-python3 init.py
+yes | python3 init.py
 python3 cleanAll.py
 python3 setupAll.py --cc $1
 
