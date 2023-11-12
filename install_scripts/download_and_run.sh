@@ -3,7 +3,7 @@
 
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied"
+    echo "No arguments supplied - architecture must be specified"
     exit 1
 fi
 
@@ -23,6 +23,7 @@ mkdir -p build
 yes | python3 init.py
 python3 cleanAll.py
 python3 setupAll.py --cc $1
+mkdir results
 
 
 echo "Download finished, running experiments"
