@@ -1,4 +1,7 @@
 
+
+echo "Building for architecture $1"
+
 echo "Updating submodules"
 git submodule init
 git submodule update
