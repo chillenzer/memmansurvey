@@ -77,6 +77,8 @@ for file, name in filepaths:
 
 	for column in dataframe:
 
+		print(dataframe.loc[dataframe[column].astype(str)])
+
 		# print("column {}".format(column))
 		# print(dataframe[column].astype(str).str)
 		dataframe.loc[dataframe[column].astype(str).str.contains("Ran longer"), column] = "0"
