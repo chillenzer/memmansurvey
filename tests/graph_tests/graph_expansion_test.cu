@@ -358,7 +358,7 @@ void testrun(CSR<DataType>& input_graph, const json& config, const std::string& 
             << init_result.mean_ << " | " << std::setw(width)
             << init_result.std_dev_ << " | " << std::setw(width)
             << init_result.median_ << "\n";
-        std::cout << std::setw(width) << "Insert" << " | " << std::setw(width)
+        std::cout << std::setw(width) << "InsertExp" << " | " << std::setw(width)
             << insert_result.num_ << " | "  << std::setw(width)
             << insert_result.mean_ << " | " << std::setw(width)
             << insert_result.std_dev_ << " | " << std::setw(width)
