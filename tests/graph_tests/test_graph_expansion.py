@@ -76,33 +76,33 @@ def main():
 	# Parse approaches
 	if(args.t):
 		if any("c" in s for s in args.t):
-			testcases["CUDA"] = os.path.join(build_path, str("c_graph_exp_test") + executable_extension)
+			testcases["CUDA"] = os.path.join(build_path, str("c_graph_test") + executable_extension)
 		if any("b" in s for s in args.t):
-			testcases["Gallatin"] = os.path.join(build_path, str("b_graph_exp_test") + executable_extension)
+			testcases["Gallatin"] = os.path.join(build_path, str("b_graph_test") + executable_extension)
 		if any("x" in s for s in args.t):
-			testcases["XMalloc"] = os.path.join(sync_build_path, str("x_graph_exp_test") + executable_extension)
+			testcases["XMalloc"] = os.path.join(sync_build_path, str("x_graph_test") + executable_extension)
 		if any("h" in s for s in args.t):
-			testcases["Halloc"] = os.path.join(sync_build_path, str("h_graph_exp_test") + executable_extension)
+			testcases["Halloc"] = os.path.join(sync_build_path, str("h_graph_test") + executable_extension)
 		if any("s" in s for s in args.t):
-			testcases["ScatterAlloc"] = os.path.join(sync_build_path, str("s_graph_exp_test") + executable_extension)
+			testcases["ScatterAlloc"] = os.path.join(sync_build_path, str("s_graph_test") + executable_extension)
 		if any("o" in s for s in args.t):
-			testcases["Ouroboros-P-S"] = os.path.join(build_path, str("o_graph_exp_test_p") + executable_extension)
-			testcases["Ouroboros-P-VA"] = os.path.join(build_path, str("o_graph_exp_test_vap") + executable_extension)
+			testcases["Ouroboros-P-S"] = os.path.join(build_path, str("o_graph_test_p") + executable_extension)
+			testcases["Ouroboros-P-VA"] = os.path.join(build_path, str("o_graph_test_vap") + executable_extension)
 			#really slow
-			testcases["Ouroboros-P-VL"] = os.path.join(build_path, str("o_graph_exp_test_vlp") + executable_extension)
-			testcases["Ouroboros-C-S"] = os.path.join(build_path, str("o_graph_exp_test_c") + executable_extension)
-			testcases["Ouroboros-C-VA"] = os.path.join(build_path, str("o_graph_exp_test_vac") + executable_extension)
+			testcases["Ouroboros-P-VL"] = os.path.join(build_path, str("o_graph_test_vlp") + executable_extension)
+			testcases["Ouroboros-C-S"] = os.path.join(build_path, str("o_graph_test_c") + executable_extension)
+			testcases["Ouroboros-C-VA"] = os.path.join(build_path, str("o_graph_test_vac") + executable_extension)
 			#C-VL is really slow, just wastes 10 minutes
-			#testcases["Ouroboros-C-VL"] = os.path.join(build_path, str("o_graph_exp_test_vlc") + executable_extension)
+			#testcases["Ouroboros-C-VL"] = os.path.join(build_path, str("o_graph_test_vlc") + executable_extension)
 		if any("f" in s for s in args.t):
-			testcases["FDGMalloc"] = os.path.join(sync_build_path, str("f_graph_exp_test") + executable_extension)
+			testcases["FDGMalloc"] = os.path.join(sync_build_path, str("f_graph_test") + executable_extension)
 		if any("r" in s for s in args.t):
-			#testcases["RegEff-A"] = os.path.join(sync_build_path, str("r_graph_exp_test_a") + executable_extension)
-			testcases["RegEff-AW"] = os.path.join(sync_build_path, str("r_graph_exp_test_aw") + executable_extension)
-			# testcases["RegEff-C"] = os.path.join(sync_build_path, str("r_graph_exp_test_c") + executable_extension)
-			# testcases["RegEff-CF"] = os.path.join(sync_build_path, str("r_graph_exp_test_cf") + executable_extension)
-			# testcases["RegEff-CM"] = os.path.join(sync_build_path, str("r_graph_exp_test_cm") + executable_extension)
-			# testcases["RegEff-CFM"] = os.path.join(sync_build_path, str("r_graph_exp_test_cfm") + executable_extension)
+			#testcases["RegEff-A"] = os.path.join(sync_build_path, str("r_graph_test_a") + executable_extension)
+			testcases["RegEff-AW"] = os.path.join(sync_build_path, str("r_graph_test_aw") + executable_extension)
+			# testcases["RegEff-C"] = os.path.join(sync_build_path, str("r_graph_test_c") + executable_extension)
+			# testcases["RegEff-CF"] = os.path.join(sync_build_path, str("r_graph_test_cf") + executable_extension)
+			# testcases["RegEff-CM"] = os.path.join(sync_build_path, str("r_graph_test_cm") + executable_extension)
+			# testcases["RegEff-CFM"] = os.path.join(sync_build_path, str("r_graph_test_cfm") + executable_extension)
 	
 	# Run Testcases
 	run_testcases = args.runtest
@@ -150,7 +150,7 @@ def main():
 			with open(csv_path, "a", newline='') as csv_file:
 				csv_file.write(graph + ",")
 			run_config = config_file + " " + path + graph + " " + str(1) + " " + csv_path
-			executecommand = "{0} {1}".format(os.path.join(build_path, str("c_graph_exp_test") + executable_extension), run_config)
+			executecommand = "{0} {1}".format(os.path.join(build_path, str("c_graph_test") + executable_extension), run_config)
 			print("#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#")
 			print("Running command -> " + executecommand)
 			print("#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#")
@@ -177,8 +177,8 @@ def main():
 			suffix = ".csv"
 			if "range" in config_file:
 				suffix = "_range.csv"
-			csv_path_insert = "results/graph_update_" + name + "_insert_exp" + suffix
-			csv_path_delete = "results/graph_update_" + name + "_delete_exp" + suffix
+			csv_path_insert = "results/graph_exp_update_" + name + "_insert" + suffix
+			csv_path_delete = "results/graph_exp_update_" + name + "_delete" + suffix
 			if(os.path.isfile(csv_path_insert)):
 				print("This file <" + csv_path_insert + "> already exists, do you really want to OVERWRITE?")
 				inputfromconsole = input()

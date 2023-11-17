@@ -70,6 +70,8 @@ for file, name in filepaths:
 
 	dataframe = dataframe.replace('',0)
 
+	print(dataframe)
+
 
 	for column in dataframe:
 
