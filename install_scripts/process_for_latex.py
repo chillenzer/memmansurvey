@@ -77,11 +77,13 @@ for file, name in filepaths:
 
 	for column in dataframe:
 
-		print(dataframe.loc[dataframe[column].astype(str)])
+		#print(dataframe.loc[dataframe[column].astype(str)])
 
 		# print("column {}".format(column))
 		# print(dataframe[column].astype(str).str)
-		dataframe.loc[dataframe[column].astype(str).str.contains("Ran longer"), column] = "0"
+
+		dataframe.replace("^.*Ran longer.*$","0", inplace=True, limit=None, regex=True)
+		#dataframe.loc[dataframe[column].astype(str).str.contains("Ran longer"), column] = "0"
 
 		#dataframe[dataframe.str.contains()] = 0
 		#print(dataframe)
