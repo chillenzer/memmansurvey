@@ -85,6 +85,13 @@ if(TEST_CUDA)
 	set_property(TARGET c_graph_test PROPERTY CUDA_ARCHITECTURES OFF)
 	target_link_libraries(c_graph_test helper)
 
+	add_executable(c_graph_exp_test
+		graph_expansion_test.cu
+	)
+	target_compile_definitions(c_graph_exp_test PUBLIC TEST_CUDA)
+	set_property(TARGET c_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
+	target_link_libraries(c_graph_exp_test helper)
+
 endif()
 
 
@@ -109,6 +116,18 @@ if (TEST_GAL)
 	target_link_libraries(b_graph_test helper)
 
 	set_property(TARGET b_graph_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+	add_executable(b_graph_exp_test
+		graph_expansion_test.cu
+	)
+
+	target_compile_definitions(b_graph_exp_test PUBLIC TEST_GAL)
+	add_subdirectory(${BASE_PATH}frameworks/gallatin/gallatin ./gallatin)
+	target_include_directories(b_graph_exp_test PUBLIC ${BASE_PATH}frameworks/gallatin)
+	target_link_libraries(b_graph_exp_test gallatin)
+	target_link_libraries(b_graph_exp_test helper)
+
+	set_property(TARGET b_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
 
 
 endif()
