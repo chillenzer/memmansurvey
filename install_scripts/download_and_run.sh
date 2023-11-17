@@ -33,4 +33,4 @@ python3 testLarge.py -mem_size 8 -device 0 -runtest -genres
 
 echo "Generating results"
 
-python3 scripts/process_for_latex.py results artifact_data
+python3 install_scripts/process_for_latex.py results artifact_data
