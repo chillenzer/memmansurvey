@@ -177,8 +177,8 @@ def main():
 			suffix = ".csv"
 			if "range" in config_file:
 				suffix = "_range.csv"
-			csv_path_insert = "results/graph_update_" + name + "_insert" + suffix
-			csv_path_delete = "results/graph_update_" + name + "_delete" + suffix
+			csv_path_insert = "results/graph_update_" + name + "_insert_exp" + suffix
+			csv_path_delete = "results/graph_update_" + name + "_delete_exp" + suffix
 			if(os.path.isfile(csv_path_insert)):
 				print("This file <" + csv_path_insert + "> already exists, do you really want to OVERWRITE?")
 				inputfromconsole = input()
