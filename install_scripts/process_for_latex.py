@@ -70,6 +70,8 @@ for file, name in filepaths:
 
 	dataframe = dataframe.replace('',0)
 
+	dataframe.rename(columns=lambda x: x.strip(), inplace=True)
+
 	print(dataframe)
 
 
@@ -236,7 +238,6 @@ for file, name in filepaths:
 
 		#print(dataframe)
 
-	dataframe.rename(columns=lambda x: x.strip(), inplace=True)
 
 	dataframe.reset_index(drop=False)
 
