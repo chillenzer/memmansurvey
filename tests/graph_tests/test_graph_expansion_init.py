@@ -208,7 +208,7 @@ def main():
 	# ####################################################################################################
 	# ####################################################################################################
 	if generate_results:
-		generateResultsFromGraphExp(testcases, "results", "Graphs", "init", 3)
+		generateResultsFromGraphExp(testcases, "results", "Graphs", "init_exp", 3)
 
 	if args.mailpass:
 		message = "Test Graph Init finished!"
