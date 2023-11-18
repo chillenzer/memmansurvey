@@ -321,19 +321,19 @@ for key in exp_graph_data:
 
 		for op,val in exp_graph_data[key]:
 
-			print("op, val")
+			print("op,val")
 			print(op, val)
 
 			output_op = ""
 
 			split_string = op.split("_");
 
-			if len(split_string) != 1:
+			if len(split_string) != 2:
 
-				output_op = split_string[0] + split_string[1].capitalize()
+				output_op = split_string[1] + split_string[2].capitalize()
 
 			else:
-				output_op = op
+				output_op = split_string[1]
 
 			outputfile.write("{} {}\n".format(output_op, val))
 
