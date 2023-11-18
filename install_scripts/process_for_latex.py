@@ -316,7 +316,7 @@ for key in exp_graph_data:
 		#print(key, graph_data[key])
 		print("op perf\n")
 
-		for op,val in graph_data[key]:
+		for op,val in exp_graph_data[key]:
 			#print(op, val)
 
 			output_op = ""
