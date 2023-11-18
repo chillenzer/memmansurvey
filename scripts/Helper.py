@@ -520,7 +520,7 @@ def generateResultsFromGraphUpdate(testcases, folderpath, dimension_name, output
 
 
 def generateResultsFromGraphUpdateExp(testcases, folderpath, dimension_name, output_name_short, approach_pos, ranged, generateFull=False):
-	print("Generate Results for graph " + output_name_short)
+	print("Generate Exp Results for graph " + output_name_short)
 	# Gather results
 	results_insert = list(list())
 	results_delete = list(list())

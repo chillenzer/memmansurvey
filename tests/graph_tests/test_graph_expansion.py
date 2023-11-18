@@ -6,7 +6,7 @@ import shutil
 import time
 from datetime import datetime
 from timedprocess import Command
-from Helper import generateResultsFromGraphUpdate
+from Helper import generateResultsFromGraphUpdateExp
 # from Helper import plotMean
 import csv
 import argparse
@@ -227,6 +227,7 @@ def main():
 	# ####################################################################################################
 	if generate_results:
 		generateResultsFromGraphUpdateExp(testcases, "results", "Graphs", "exp_update", 2, ranged)
+
 
 	if args.mailpass:
 		message = "Test Graph Update finished!"
