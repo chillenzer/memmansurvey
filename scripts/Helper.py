@@ -548,6 +548,7 @@ def generateResultsFromGraphUpdateExp(testcases, folderpath, dimension_name, out
 
 		print("Determining approach")
 		approach_name = filename.split('_')[approach_pos].split(".")[0]
+		print("Approach", approach_name)
 		if approach_name not in testcases:
 			continue
 		print("Processing -> " + str(filename))
