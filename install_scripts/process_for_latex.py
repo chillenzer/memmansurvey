@@ -186,6 +186,9 @@ for file, name in filepaths:
 
 		#.split("_")[-1]
 
+		if "init" in clipped_name:
+			operation = init
+
 		for column in dataframe:
 			print(column)
 
