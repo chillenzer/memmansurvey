@@ -115,10 +115,12 @@ def main():
 	# 		["python test_scaling.py -t f+o+s+c+r+b -byterange 8192-8192 -threadrange 0-18 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), "scaling"]
 	# 	],
 	# 	"graph_tests" : [
-	# 		["python test_graph_init_big.py -t o+s+c+r+b -configfile big_config_init.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-	# 		["python test_graph_update_big.py -t o+s+c+r+b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-	# 		["python test_graph_update_big.py -t o+s+c+r+b -configfile big_config_update_range.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-	# 		["python test_graph_expansion.py -t o+s+c+r+b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],			
+			# ["python test_graph_init_big.py -t o+s+c+r+b -configfile big_config_init.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			# ["python test_graph_update_big.py -t o+s+c+r+b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			# ["python test_graph_update_big.py -t o+s+c+r+b -configfile big_config_update_range.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			# ["python test_graph_expansion_init.py -t o+s+c+r+b -configfile big_config_init.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			# ["python test_graph_expansion.py -t o+s+c+r+b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			# ["python test_graph_expansion.py -t o+s+c+r+b -configfile big_config_update_range.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""]			
 	# 	],
 	# 	"synth_tests" : [
 	# 		["python test_registers.py -t o+s+c+r+x+b {0} {1} -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
@@ -133,13 +135,10 @@ def main():
 	# }
 
 	tests = {
-		"graph_tests" : [
-			# ["python test_graph_init_big.py -t o+s+c+r+b -configfile big_config_init.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			# ["python test_graph_update_big.py -t o+s+c+r+b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			# ["python test_graph_update_big.py -t o+s+c+r+b -configfile big_config_update_range.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			["python test_graph_expansion_init.py -t o+s+c+r+b -configfile big_config_init.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			["python test_graph_expansion.py -t o+s+c+r+b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			["python test_graph_expansion.py -t o+s+c+r+b -configfile big_config_update_range.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""]
+		"frag_tests"  : [
+			["python test_fragmentation.py -t o+c+r+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			["python test_mixed_fragmentation.py -t o+s+x+c+r+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			["python test_oom.py -t o+c+r+b -num 100000 -range 512-512 {0} {1} -timeout 120 -allocsize 2".format(runteststr, genresstr), ""]
 		]
 	}
 

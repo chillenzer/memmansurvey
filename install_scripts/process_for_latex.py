@@ -319,13 +319,13 @@ for key in exp_graph_data:
 	with open(output_filename + ".csv", "w") as outputfile:
 
 		#print(key, graph_data[key])
-		print("Exp columns\n")
+		#print("Exp columns\n")
 		outputfile.write("op perf\n")
 
 		for op,val in exp_graph_data[key]:
 
-			print("op,val")
-			print(op, val)
+			# print("op,val")
+			# print(op, val)
 
 			output_op = ""
 
