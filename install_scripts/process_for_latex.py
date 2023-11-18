@@ -328,9 +328,9 @@ for key in exp_graph_data:
 
 			split_string = op.split("_");
 
-			if len(split_string) != 2:
+			if "range" in op:
 
-				output_op = split_string[1] + split_string[2].capitalize()
+				output_op = split_string[0] + split_string[1].capitalize()
 
 			else:
 				output_op = split_string[1]
