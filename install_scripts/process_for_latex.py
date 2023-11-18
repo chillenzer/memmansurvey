@@ -37,6 +37,8 @@ output_dataframes = {}
 
 graph_data = {}
 
+exp_graph_data = {}
+
 
 for file, name in filepaths:
 
@@ -207,8 +209,12 @@ for file, name in filepaths:
 				if lookup_key not in graph_data:
 					graph_data[lookup_key] = []
 
+				if "exp" in clipped_name:
 
-				graph_data[lookup_key].append((operation, row[column]))
+					graph_data[lookup_key].append((operation, row[column]))
+				else:
+					exp_graph_data[lookup_key].append((operation, row[column]))
+
 
 
 
@@ -289,6 +295,35 @@ for key in graph_data:
 				output_op = op
 
 			outputfile.write("{} {}\n".format(output_op, val))
+
+
+#output graphs.
+for key in exp_graph_data:
+
+	output_filename = output_folder + "/exp_" + key
+
+	with open(output_filename + ".csv", "w") as outputfile:
+
+		#print(key, graph_data[key])
+		print("op perf\n")
+
+		for op,val in graph_data[key]:
+			#print(op, val)
+
+			output_op = ""
+
+			split_string = op.split("_");
+
+			if len(split_string) != 1:
+
+				output_op = split_string[0] + split_string[1].capitalize()
+
+			else:
+				output_op = op
+
+			outputfile.write("{} {}\n".format(output_op, val))
+
+
 
 
 
