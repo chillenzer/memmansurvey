@@ -206,16 +206,22 @@ for file, name in filepaths:
 
 				print("Key {} for op {}".format(lookup_key, operation))
 
-				if lookup_key not in graph_data:
-					graph_data[lookup_key] = []
-
 				if "exp" in clipped_name:
 
 					if "delete" in clipped_name:
 						continue
 
+					if lookup_key not in exp_graph_data:
+						exp_graph_data[lookup_key] = []
+
 					exp_graph_data[lookup_key].append((operation, row[column]))
+
 				else:
+
+
+					if lookup_key not in graph_data:
+						graph_data[lookup_key] = []
+
 					graph_data[lookup_key].append((operation, row[column]))
 
 
