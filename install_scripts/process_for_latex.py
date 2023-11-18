@@ -211,9 +211,12 @@ for file, name in filepaths:
 
 				if "exp" in clipped_name:
 
-					graph_data[lookup_key].append((operation, row[column]))
-				else:
+					if "delete" in clipped_name:
+						continue
+
 					exp_graph_data[lookup_key].append((operation, row[column]))
+				else:
+					graph_data[lookup_key].append((operation, row[column]))
 
 
 
