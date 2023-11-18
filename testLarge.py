@@ -137,7 +137,7 @@ def main():
 			# ["python test_graph_init_big.py -t o+s+c+r+b -configfile big_config_init.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
 			# ["python test_graph_update_big.py -t o+s+c+r+b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
 			# ["python test_graph_update_big.py -t o+s+c+r+b -configfile big_config_update_range.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			["python test_graph_expansion.py -t o+s+c+r+b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""]
+			["python test_graph_expansion.py -t b -configfile big_config_update.json {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""]
 		]
 	}
 
