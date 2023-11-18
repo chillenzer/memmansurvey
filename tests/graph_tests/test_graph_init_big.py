@@ -30,7 +30,7 @@ from sendEmail import EmailAlert
 
 graphs = [
 	#"liveJournal.mtx",
-	"cit-Patents.mtx",
+	#"cit-Patents.mtx",
 	"orkut.mtx"
 ]
 
