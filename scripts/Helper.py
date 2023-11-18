@@ -533,7 +533,7 @@ def generateResultsFromGraphUpdateExp(testcases, folderpath, dimension_name, out
 		if(os.path.isdir(filename)):
 			continue
 
-		if str("exp") != filename.split('_'[1]):
+		if str("exp") != filename.split('_')[1]:
 			continue
 
 		if str("update") != filename.split('_')[2]:
