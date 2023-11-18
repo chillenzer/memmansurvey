@@ -426,6 +426,65 @@ def generateResultsFromGraph(testcases, folderpath, dimension_name, output_name_
 
 	print("####################")
 
+def generateResultsFromGraphExp(testcases, folderpath, dimension_name, output_name_short, approach_pos, generateFull=False):
+	print("Generate Results for graph " + output_name_short)
+	# Gather results
+	results = list(list())
+
+	# Go over files, read data and generate new
+	written_header = False
+	for file in os.listdir(folderpath):
+		filename = folderpath + str("/") + os.fsdecode(file)
+		if(os.path.isdir(filename)):
+			continue
+		if str("init") != filename.split('_')[1]:
+			continue
+		if str("exp") not in filename:
+			continue;
+		approach_name = filename.split('_')[approach_pos].split(".")[0]
+		if approach_name not in testcases:
+			continue
+		print("Processing -> " + str(filename))
+		
+		with open(filename, newline='') as csv_file:
+			csvreader = list(csv.reader(csv_file, delimiter=',', quotechar='|'))
+			cols = list()
+			num_cols = 6
+			for i in range(num_cols):
+				cols.append([row[i] if len(row) > i else "" for row in csvreader])
+			if not written_header:
+				results.append(cols[0][1:])
+				results[-1].insert(0, dimension_name)
+				written_header = True
+			results.append(cols[1][1:])
+			results[-1].insert(0, approach_name + (" - mean") if generateFull else approach_name)
+			if generateFull:
+				results.append(cols[2][1:])
+				results[-1].insert(0, approach_name + " - std_dev")
+				results.append(cols[3][1:])
+				results[-1].insert(0, approach_name + " - min")
+				results.append(cols[4][1:])
+				results[-1].insert(0, approach_name + " - max")
+				results.append(cols[5][1:])
+				results[-1].insert(0, approach_name + " - median")
+
+	# Get Timestring
+	now = datetime.now()
+	time_string = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+	# Generate output file
+	print("------------------")
+	outputstr = time_string + str("_graph_") + output_name_short + str(".csv")
+	print("Generating -> " + outputstr)
+	filename = folderpath + str("/aggregate/") + outputstr
+	with(open(filename, "w", newline='')) as f:
+		writer = csv.writer(f, delimiter=',')
+		for row in results:
+			writer.writerow(row)
+
+	print("####################")
+
+
 def generateResultsFromGraphUpdate(testcases, folderpath, dimension_name, output_name_short, approach_pos, ranged, generateFull=False):
 	print("Generate Results for graph " + output_name_short)
 	# Gather results
