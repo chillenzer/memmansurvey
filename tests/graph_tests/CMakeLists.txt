@@ -432,42 +432,42 @@ if(TEST_REG)
 	#regeff expansion test
 
 	add_executable(r_graph_exp_test_a
-		graph_exp_test.cu
+		graph_expansion_test.cu
 	)
 	target_compile_definitions(r_graph_exp_test_a PUBLIC TEST_REGEFF)
 	target_compile_definitions(r_graph_exp_test_a PUBLIC TEST_ATOMIC)
 	set_property(TARGET r_graph_exp_test_a PROPERTY CUDA_ARCHITECTURES OFF)
 
 	add_executable(r_graph_exp_test_aw
-		graph_exp_test.cu
+		graph_expansion_test.cu
 	)
 	target_compile_definitions(r_graph_exp_test_aw PUBLIC TEST_REGEFF)
 	target_compile_definitions(r_graph_exp_test_aw PUBLIC TEST_ATOMIC_WRAP)
 	set_property(TARGET r_graph_exp_test_aw PROPERTY CUDA_ARCHITECTURES OFF)
 
 	add_executable(r_graph_exp_test_c
-		graph_exp_test.cu
+		graph_expansion_test.cu
 	)
 	target_compile_definitions(r_graph_exp_test_c PUBLIC TEST_REGEFF)
 	target_compile_definitions(r_graph_exp_test_c PUBLIC TEST_CIRCULAR)
 	set_property(TARGET r_graph_exp_test_c PROPERTY CUDA_ARCHITECTURES OFF)
 
 	add_executable(r_graph_exp_test_cf
-		graph_exp_test.cu
+		graph_expansion_test.cu
 	)
 	target_compile_definitions(r_graph_exp_test_cf PUBLIC TEST_REGEFF)
 	target_compile_definitions(r_graph_exp_test_cf PUBLIC TEST_CIRCULAR_FUSED)
 	set_property(TARGET r_graph_exp_test_cf PROPERTY CUDA_ARCHITECTURES OFF)
 
 	add_executable(r_graph_exp_test_cm
-		graph_exp_test.cu
+		graph_expansion_test.cu
 	)
 	target_compile_definitions(r_graph_exp_test_cm PUBLIC TEST_REGEFF)
 	target_compile_definitions(r_graph_exp_test_cm PUBLIC TEST_CIRCULAR_MULTI)
 	set_property(TARGET r_graph_exp_test_cm PROPERTY CUDA_ARCHITECTURES OFF)
 
 	add_executable(r_graph_exp_test_cfm
-		graph_exp_test.cu
+		graph_expansion_test.cu
 	)
 	target_compile_definitions(r_graph_exp_test_cfm PUBLIC TEST_REGEFF)
 	target_compile_definitions(r_graph_exp_test_cfm PUBLIC TEST_CIRCULAR_FUSED_MULTI)
