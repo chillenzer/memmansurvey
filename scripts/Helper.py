@@ -519,6 +519,103 @@ def generateResultsFromGraphUpdate(testcases, folderpath, dimension_name, output
 	print("####################")
 
 
+def generateResultsFromGraphUpdateExp(testcases, folderpath, dimension_name, output_name_short, approach_pos, ranged, generateFull=False):
+	print("Generate Results for graph " + output_name_short)
+	# Gather results
+	results_insert = list(list())
+	results_delete = list(list())
+
+	# Go over files, read data and generate new
+	written_header_insert = False
+	written_header_delete = False
+	for file in os.listdir(folderpath):
+		filename = folderpath + str("/") + os.fsdecode(file)
+		if(os.path.isdir(filename)):
+			continue
+
+		if str("exp") != filename.split('_'[1]):
+			continue
+
+		if str("update") != filename.split('_')[2]:
+				continue
+		if ranged:
+			if str("range") != filename.split('_')[-1].split(".")[0]:
+				continue
+		else:
+			if str("range") == filename.split('_')[-1].split(".")[0]:
+				continue
+		approach_name = filename.split('_')[approach_pos].split(".")[0]
+		if approach_name not in testcases:
+			continue
+		print("Processing -> " + str(filename))
+		
+		with open(filename, newline='') as csv_file:
+			csvreader = list(csv.reader(csv_file, delimiter=',', quotechar='|'))
+			cols = list()
+			num_cols = 6
+			for i in range(num_cols):
+				cols.append([row[i] if len(row) > i else "" for row in csvreader])
+			if "delete" in filename:
+				if not written_header_delete:
+					results_delete.append(cols[0][1:])
+					results_delete[-1].insert(0, dimension_name)
+					written_header_delete = True
+				results_delete.append(cols[1][1:])
+				results_delete[-1].insert(0, approach_name + (" - mean") if generateFull else approach_name)
+				if generateFull:
+					results_delete.append(cols[2][1:])
+					results_delete[-1].insert(0, approach_name + " - std_dev")
+					results_delete.append(cols[3][1:])
+					results_delete[-1].insert(0, approach_name + " - min")
+					results_delete.append(cols[4][1:])
+					results_delete[-1].insert(0, approach_name + " - max")
+					results_delete.append(cols[5][1:])
+					results_delete[-1].insert(0, approach_name + " - median")
+			else:
+				if not written_header_insert:
+					results_insert.append(cols[0][1:])
+					results_insert[-1].insert(0, dimension_name)
+					written_header_insert = True
+				results_insert.append(cols[1][1:])
+				results_insert[-1].insert(0, approach_name + (" - mean") if generateFull else approach_name)
+				if generateFull:
+					results_insert.append(cols[2][1:])
+					results_insert[-1].insert(0, approach_name + " - std_dev")
+					results_insert.append(cols[3][1:])
+					results_insert[-1].insert(0, approach_name + " - min")
+					results_insert.append(cols[4][1:])
+					results_insert[-1].insert(0, approach_name + " - max")
+					results_insert.append(cols[5][1:])
+					results_insert[-1].insert(0, approach_name + " - median")
+
+	# Get Timestring
+	now = datetime.now()
+	time_string = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+	# Generate output file
+	print("------------------")
+	suffix = ".csv"
+	if ranged:
+		suffix = "_range.csv"
+	outputstr = time_string + str("_graph_") + output_name_short + str("_insert") + suffix
+	print("Generating -> " + outputstr)
+	filename = folderpath + str("/aggregate/") + outputstr
+	with(open(filename, "w", newline='')) as f:
+		writer = csv.writer(f, delimiter=',')
+		for row in results_insert:
+			writer.writerow(row)
+
+	outputstr = time_string + str("_graph_") + output_name_short + str("_delete") + suffix
+	print("Generating -> " + outputstr)
+	filename = folderpath + str("/aggregate/") + outputstr
+	with(open(filename, "w", newline='')) as f:
+		writer = csv.writer(f, delimiter=',')
+		for row in results_delete:
+			writer.writerow(row)
+
+	print("####################")
+
+
 ####################################################################################################
 ####################################################################################################
 # Plot disabled for now

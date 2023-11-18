@@ -226,7 +226,7 @@ def main():
 	# ####################################################################################################
 	# ####################################################################################################
 	if generate_results:
-		generateResultsFromGraphUpdate(testcases, "results", "Graphs", "exp_update", 2, ranged)
+		generateResultsFromGraphUpdateExp(testcases, "results", "Graphs", "exp_update", 2, ranged)
 
 	if args.mailpass:
 		message = "Test Graph Update finished!"
