@@ -81,6 +81,10 @@ for file, name in filepaths:
 
 		# print("column {}".format(column))
 		# print(dataframe[column].astype(str).str)
+		print("Operating on column ", column)
+
+		print("Data in column")
+		print(dataframe[column])
 
 		dataframe.replace("^.*Ran longer.*$","0", inplace=True, limit=None, regex=True)
 		#dataframe.loc[dataframe[column].astype(str).str.contains("Ran longer"), column] = "0"
