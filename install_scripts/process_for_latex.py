@@ -287,7 +287,9 @@ for key in graph_data:
 	with open(output_filename + ".csv", "w") as outputfile:
 
 		#print(key, graph_data[key])
-		print("op perf\n")
+		#print("op perf\n")
+		outputfile.write("op perf\n")
+
 
 		for op,val in graph_data[key]:
 			#print(op, val)
@@ -314,9 +316,12 @@ for key in exp_graph_data:
 	with open(output_filename + ".csv", "w") as outputfile:
 
 		#print(key, graph_data[key])
-		print("op perf\n")
+		print("Exp columns\n")
+		outputfile.write("op perf\n")
 
 		for op,val in exp_graph_data[key]:
+
+			print("op, val")
 			print(op, val)
 
 			output_op = ""
