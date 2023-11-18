@@ -336,12 +336,12 @@ for key in exp_graph_data:
 
 				output_op = op
 
-			else if "range" in op:
+			elif "range" in op:
 
 				output_op = split_string[0] + split_string[1].capitalize()
 
 			else:
-				
+
 				output_op = split_string[1]
 
 			outputfile.write("{} {}\n".format(output_op, val))
