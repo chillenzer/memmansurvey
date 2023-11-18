@@ -544,6 +544,9 @@ def generateResultsFromGraphUpdateExp(testcases, folderpath, dimension_name, out
 		else:
 			if str("range") == filename.split('_')[-1].split(".")[0]:
 				continue
+
+
+		print("Determining approach")
 		approach_name = filename.split('_')[approach_pos].split(".")[0]
 		if approach_name not in testcases:
 			continue
