@@ -331,11 +331,17 @@ for key in exp_graph_data:
 
 			split_string = op.split("_");
 
-			if "range" in op:
+
+			if "init" in op:
+
+				output_op = op
+
+			else if "range" in op:
 
 				output_op = split_string[0] + split_string[1].capitalize()
 
 			else:
+				
 				output_op = split_string[1]
 
 			outputfile.write("{} {}\n".format(output_op, val))
