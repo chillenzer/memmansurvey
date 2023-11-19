@@ -172,6 +172,58 @@ def generateResultsFromFileFragmentation(folderpath, param1, param2, param3, dim
 			writer.writerow(row)
 	print("####################")
 
+
+def generateResultsFromFileFragmentationMixed(folderpath, param1, param2, param3, dimension_name, approach_pos, iter):
+	print("Generate Results for identifier " + str(param1) + "_" + str(param2) + "-" + str(param3))
+	# Gather results
+	result_frag = list(list())
+
+	# Go over files, read data and generate new
+	written_header_frag = False
+	for file in os.listdir(folderpath):
+		filename = folderpath + str("/") + os.fsdecode(file)
+		if(os.path.isdir(filename)):
+			continue
+		if str("frag") != filename.split('_')[1].split('/')[1] or str(param1) != filename.split('_')[approach_pos+1] or str(param2) + "-" + str(param3) != filename.split('_')[approach_pos+2].split(".")[0]:
+			continue
+		print("Processing -> " + str(filename))
+		approach_name = filename.split('_')[approach_pos]
+		with open(filename, newline='') as csv_file:
+			csvreader = list(csv.reader(csv_file, delimiter=',', quotechar='|'))
+			if not written_header_frag:
+				actual_size = [i for i in range(param2, param3 + 4, 4)]
+				result_frag.append(list(actual_size))
+				result_frag[-1].insert(0, dimension_name)
+				actual_size = [i * param1 for i in range(param2, param3 + 4, 4)]
+				result_frag.append(list(actual_size))
+				result_frag[-1].insert(0, "ActualSize - range")
+				result_frag.append(list(actual_size))
+				result_frag[-1].insert(0, "ActualSize - static range")
+				written_header_frag = True
+			csvreader = csvreader[1:]
+
+			try:
+				result_frag.append([row[1] for row in csvreader])
+				result_frag[-1].insert(0, approach_name + " - range")
+				result_frag.append([row[-1] for row in csvreader])
+				result_frag[-1].insert(0, approach_name + " - static range")
+			except:
+				continue
+
+	# Get Timestring
+	now = datetime.now()
+	time_string = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+	# Generate output file
+	print("------------------")
+	print("Generating -> " + time_string + str("_frag_") + str(param1) + "_" + str(param2) + "-" + str(param3) + str(".csv"))
+	frag_name = folderpath + str("/aggregate/") + time_string +  str("_frag_") + str(param1) + "_" + str(param2) + "-" + str(param3) + str(".csv")
+	with(open(frag_name, "w", newline='')) as f:
+		writer = csv.writer(f, delimiter=',')
+		for row in result_frag:
+			writer.writerow(row)
+	print("####################")
+
 def generateResultsFromFileOOM(folderpath, testcases, param1, param2, param3, dimension_name, approach_pos, alloc_size):
 	print("Generate Results for identifier " + str(param1) + "_" + str(param2) + "-" + str(param3))
 	# Gather results

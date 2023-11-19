@@ -6,7 +6,7 @@ import shutil
 import time
 from datetime import datetime
 from timedprocess import Command
-from Helper import generateResultsFromFileFragmentation
+from Helper import generateResultsFromFileFragmentationMixed
 # from Helper import plotLineRange
 import csv
 import argparse
@@ -15,7 +15,7 @@ from sendEmail import EmailAlert
 def main():
 	# Run all files from a directory
 	print("##############################################################################")
-	print("Callable as: python test_fragmentation.py")
+	print("Callable as: python test_mixdd_fragmentation.py")
 	print("##############################################################################")
 	
 	# Specify which test configuration to use
@@ -134,7 +134,7 @@ def main():
 	####################################################################################################
 	if run_testcases:
 		for name, executable in testcases.items():
-			csv_path = "results/frag_" + name + "_" + str(num_allocations) + "_" + str(smallest_allocation_size) + "-" + str(largest_allocation_size) + ".csv"
+			csv_path = "results/mixed_frag_" + name + "_" + str(num_allocations) + "_" + str(smallest_allocation_size) + "-" + str(largest_allocation_size) + ".csv"
 			if(os.path.isfile(csv_path)):
 				print("This file already exists, do you really want to OVERWRITE?")
 				inputfromconsole = input()
@@ -177,7 +177,7 @@ def main():
 	if generate_results:
 		if not os.path.exists("results/aggregate"):
 			os.mkdir("results/aggregate")
-		generateResultsFromFileFragmentation("results", num_allocations, smallest_allocation_size, largest_allocation_size, "Bytes", 1, num_iterations)
+		generateResultsFromFileFragmentationMixed("results", num_allocations, smallest_allocation_size, largest_allocation_size, "Bytes", 1, num_iterations)
 
 	####################################################################################################
 	####################################################################################################
