@@ -1,0 +1,58 @@
+\begin{subfigure}[b]{.33\linewidth}
+    \centering
+\pgfplotstableread[col sep=comma,]{artifact_data/oom_100000_4-8192.csv}\datatable
+\begin{tikzpicture}
+\begin{axis}[
+    fragOOMPlot,
+    xtick={8,32,128,512,2048,8192},
+    xticklabels={8,32,128,512,2048,8192},
+    xmode=log,
+    ylabel={Ratio (\%)}]
+    
+      \addplot[RegEffAW] table [x=Approach, y=RegEff-AW]{\datatable};
+    %addlegendentry{$Baseline (RegEff-AW)$}
+
+    \addplot[Cuda] table [x=Approach, y=CUDA]{\datatable};
+    %addlegendentry{$CUDA$}
+
+    %\addplot[ScatterAlloc] table [x=Approach, y=ScatterAlloc]{\datatable};
+    %addlegendentry{$ScatterAlloc$}
+
+    \addplot[OuroPS] table [x=Approach, y=Ouroboros-P-S]{\datatable};
+    %addlegendentry{$Ouroboros-P-S$}
+
+    \addplot[OuroPVA] table [x=Approach, y=Ouroboros-P-VA]{\datatable};
+    %addlegendentry{$Ouroboros-P-VA$}
+
+    \addplot[OuroPVL] table [x=Approach, y=Ouroboros-P-VL]{\datatable};
+    %addlegendentry{$Ouroboros-P-VL$}
+
+    \addplot[OuroCS] table [x=Approach, y=Ouroboros-C-S]{\datatable};
+    %addlegendentry{$Ouroboros-C-S$}
+
+    \addplot[OuroCVA] table [x=Approach, y=Ouroboros-C-VA]{\datatable};
+    %addlegendentry{$Ouroboros-C-VA$}
+
+    \addplot[OuroCVL] table [x=Approach, y=Ouroboros-C-VL]{\datatable};
+    %addlegendentry{$Ouroboros-C-VL$}
+
+    \addplot[RegEffC] table [x=Approach, y=RegEff-C]{\datatable};
+    %addlegendentry{$RegEff-C$}
+    
+    \addplot[RegEffCF] table [x=Approach, y=RegEff-CF]{\datatable};
+    %addlegendentry{$RegEff-CF$}
+
+    \addplot[RegEffCM] table [x=Approach, y=RegEff-CM]{\datatable};
+    %addlegendentry{$RegEff-CM$}
+
+    \addplot[RegEffCFM] table [x=Approach, y=RegEff-CFM]{\datatable};
+    %addlegendentry{$RegEff-CFM$}
+
+    \addplot[OurStyle] table [x=Approach, y=Gallatin]{\datatable};
+    %addlegendentry{$\sysname$}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Memory utilization}
+\label{fig:oomGraph}
+\end{subfigure}

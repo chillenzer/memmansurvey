@@ -1,0 +1,4 @@
+Approach,CUDA,Ouroboros-P-VA,Ouroboros-C-S,Ouroboros-C-VA,Gallatin,ScatterAlloc,XMalloc,RegEff-CF,Ouroboros-P-S,RegEff-AW,RegEff-CM,RegEff-CFM,RegEff-C,Ouroboros-C-VL,Ouroboros-P-VL
+Alloc Size,24,40,56,56,50,46,65,14,34,12,16,16,15,66,40
+Timing (ms) GPU,24,26,24,30,36,22,24,8,24,4,8,8,8,32,30
+Timing (ms) CPU,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0

@@ -1,0 +1,74 @@
+\begin{subfigure}{\columnwidth}
+\pgfplotstableread[col sep=comma,]{data/scale_alloc_16_1-1048576.csv}\datatable
+
+
+\begin{tikzpicture}
+\begin{axis}[
+    table/col sep=comma,
+    unbounded coords=jump,
+    xtick={1,4,16,64,256,1024,4096,16384,65336,262144,1048576},
+    xticklabels={1,4,16,64,256,1024,4096,16384,65336,262144,1048576},
+    %xticklabels from table={\datatable}{Bytes},
+    x tick label style={font=\normalsize, rotate=45, anchor=east},
+    xmode=log,
+    ymode=log,
+    ylabel={Time per Allocation (ms)},
+    xlabel={Allocation Size (Bytes)},
+    legend columns = 4]
+
+
+     \addplot[RegEffAW] table [x=Threads, y=RegEffAW]{\datatable};
+    %\addlegendentry{$Baseline (RegEff-AW)$}
+
+    \addplot[Cuda] table [x=Threads, y=CUDA]{\datatable};
+    %\addlegendentry{$CUDA$}
+
+    \addplot[ScatterAlloc] table [x=Threads, y=ScatterAlloc]{\datatable};
+    %\addlegendentry{$ScatterAlloc$}
+
+    \addplot[OuroPS] table [x=Threads, y=OuroborosPS]{\datatable};
+    %\addlegendentry{$Ouroboros-P-S$}
+
+    \addplot[OuroPVA] table [x=Threads, y=OuroborosPVA]{\datatable};
+    %\addlegendentry{$Ouroboros-P-VA$}
+
+    \addplot[OuroPVL] table [x=Threads, y=OuroborosPVL]{\datatable};
+    %\addlegendentry{$Ouroboros-P-VL$}
+
+    \addplot[OuroCS] table [x=Threads, y=OuroborosCS]{\datatable};
+    %\addlegendentry{$Ouroboros-C-S$}
+
+    \addplot[OuroCVA] table [x=Threads, y=OuroborosCVA]{\datatable};
+    %\addlegendentry{$Ouroboros-C-VA$}
+
+    \addplot[OuroCVL] table [x=Threads, y=OuroborosCVL]{\datatable};
+    %\addlegendentry{$Ouroboros-C-VL$}
+
+    \addplot[RegEffC] table [x=Threads, y=RegEffC]{\datatable};
+    %\addlegendentry{$RegEff-C$}
+    
+    \addplot[RegEffCF] table [x=Threads, y=RegEffCF]{\datatable};
+    %\addlegendentry{$RegEff-CF$}
+
+    \addplot[RegEffCM] table [x=Threads, y=RegEffCM]{\datatable};
+    %\addlegendentry{$RegEff-CM$}
+
+    \addplot[RegEffCFM] table [x=Threads, y=RegEffCFM]{\datatable};
+    %\addlegendentry{$RegEff-CFM$}
+
+    \addplot[OurStyle] table [x=Threads, y=BETA]{\datatable};
+    %\addlegendentry{$\sysname$}
+
+
+    %doesn't work at all
+    % \addplot[mark=0] table [x=ByteRange, y=ScatterAlloc]{\datatable};
+    % \addlegendentry{$ScatterAlloc$}
+
+
+\end{axis}
+\end{tikzpicture}
+
+
+\caption{16-byte Scale allocation performance.}
+\label{fig:scaleAllocSubfigure}
+\end{subfigure}

@@ -1,0 +1,33 @@
+\begin{subfigure}{\columnwidth}
+
+\begin{tikzpicture}
+  \centering
+  \begin{axis}[
+    graphPlot2,
+    ymode = log,
+    symbolic x coords={init,insert,insertRange},
+    enlarge x limits=0.15,
+    ]
+
+    %BETA OuroborosPVA OuroborosCS
+    \addplot[draw=none, OurStyleGraph, x=op, y=perf]   table {artifact_data/exp_Gallatin-orkut.csv};
+    %\addplot[draw=none, fill=green!30, x=op, y=perf]   table {data/orkut_CUDA.txt};
+    
+    \addplot[draw=none, OuroCSGraph, x=op, y=perf]   table {artifact_data/exp_Ouroboros-C-S-orkut.csv};
+
+    %\addplot[draw=none, OuroPSGraph, x=op, y=perf]   table {data/graph_expansion/orkut_OuroborosPS.txt};
+    \addplot[draw=none, OuroPVAGraph, x=op, y=perf]   table {artifact_data/exp_Ouroboros-P-VA-orkut.csv};
+    
+    \addplot[draw=none, OuroPVLGraph, x=op, y=perf]   table {artifact_data/exp_Ouroboros-P-VL-orkut.csv};
+
+    \addplot[draw=none, RegEffAWGraph, x=op, y=perf]   table {artifact_data/exp_RegEff-AW-orkut.csv};
+    %\addplot[draw=none, fill=green!30, x=op, y=OuroborosPVA]   table {data/test_graph_ouroborosPVA.txt};
+    %\addplot[draw=none, fill=red!30]   table {data/test_graph_ouroborosCS.txt};
+
+    
+    %\legend{\sysname, Ouroboros-C-S, Ouroboros-P-S, Ouroboros-P-VA, Ouroboros-P-VL, Baseline (RegEff-AW)}
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Performance for expansions only}
+  \label{fig:expansionOrkut}
+\end{subfigure}

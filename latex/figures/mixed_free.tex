@@ -1,0 +1,75 @@
+\begin{figure*}[ht]
+    \centering
+\pgfplotstableread[col sep=comma,]{data/perf_mixed_free_1000000_16-4096.csv}\datatable
+
+
+\begin{tikzpicture}
+\begin{axis}[
+    width=\columnwidth,
+    height=10cm,
+    table/col sep=comma,
+    unbounded coords=jump,
+    xtick={16,32,64,128,256,512,1024,2048,4096},
+    xticklabels={16,32,64,128,256,512,1024,2048,4096},
+    %xticklabels from table={\datatable}{Bytes},
+    x tick label style={font=\normalsize, rotate=35, anchor=east},
+    xmode=log,
+    ymode=log,
+    legend pos = outer north east,
+    ylabel={Time per Free (ms)},
+    xlabel={Allocation Size (Bytes)}]
+
+
+    %RegEff_CFM,XMalloc,RegEff_CM
+    \addplot+[mark=o] table [x=ByteRange, y=OuroborosPVA]{\datatable};
+    \addlegendentry{$Ouroboros-P-VA$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=RegEffC]{\datatable};
+    \addlegendentry{$RegEff-C$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=OuroborosCVA]{\datatable};
+    \addlegendentry{$Ouroboros-C-VA$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=CUDA]{\datatable};
+    \addlegendentry{$CUDA$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=OuroborosCVL]{\datatable};
+    \addlegendentry{$Ouroboros-C-VL$}
+    
+    \addplot+[mark=o] table [x=ByteRange, y=BETA]{\datatable};
+    \addlegendentry{$\sysname$}
+    
+    \addplot+[mark=o] table [x=ByteRange, y=RegEffCF]{\datatable};
+    \addlegendentry{$RegEff-CF$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=OuroborosPVL]{\datatable};
+    \addlegendentry{$Ouroboros-P-VL$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=OuroborosCS]{\datatable};
+    \addlegendentry{$Ouroboros-C-S$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=RegEffAW]{\datatable};
+    \addlegendentry{$RegEff-AW$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=OuroborosPS]{\datatable};
+    \addlegendentry{$Ouroboros-P-S$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=RegEffCFM]{\datatable};
+    \addlegendentry{$RegEff-CFM$}
+
+    \addplot+[mark=o] table [x=ByteRange, y=RegEffCM]{\datatable};
+    \addlegendentry{$RegEff-CM$}
+
+
+    %doesn't work at all
+    % \addplot+[mark=0] table [x=ByteRange, y=ScatterAlloc]{\datatable};
+    % \addlegendentry{$ScatterAlloc$}
+
+
+\end{axis}
+\end{tikzpicture}
+
+
+\caption{Mixed-sized Free performance. All tests were run on 1,000,000 items.}
+\label{fig:mixedFreePerf}
+\end{figure*}

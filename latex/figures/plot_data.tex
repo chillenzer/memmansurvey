@@ -1,0 +1,189 @@
+\pgfplotsset{
+  logDataPlot/.style={
+    small,
+    width = \linewidth + 15pt,
+    height=0.5\linewidth,
+    xlabel={Filter Size},
+    ylabel={Throughput (B/s)},
+    xlabel near ticks,
+    x label style={at={(0.5,-0.12)},font=\small},
+    scaled y ticks = base 10:-3,
+    ylabel near ticks,
+    y label style={at={(-0.1,0.5)},font=\small},
+    ytick style={draw=none},
+    ytick scale label code/.code = {},
+    yticklabel style={ /pgf/number format/fixed },
+    ymajorgrids,
+    yminorgrids,
+    ymin=0,
+    minor tick num=1,
+    minor grid style={draw=gray!25},
+  },
+}
+
+\pgfplotsset{
+ defaultPlot1/.style={
+    small,
+    width = \columnwidth,
+    height =.5*\columnwidth,
+    table/col sep=comma,
+    unbounded coords=jump,
+    xtick={16,32,64,128,256,512,1024,2048,4096},
+    xticklabels={16,32,64,128,256,512,1024,2048,4096},
+    %xticklabels from table={\datatable}{Bytes},
+    x tick label style={font=\normalsize, rotate=35, anchor=east, yshift=-2pt},
+    legend pos = outer north east,
+    xlabel={Allocation size (bytes)},
+    ylabel={Time (ms)}
+    }
+}
+
+
+\pgfplotsset{
+ fragOOMPlot/.style={
+    small,
+    width = \columnwidth,
+    height = 0.7\columnwidth,
+    table/col sep=comma,
+    unbounded coords=jump,
+    xtick={16,32,64,128,256,512,1024,2048,4096},
+    xticklabels={16,32,64,128,256,512,1024,2048,4096},
+    %xticklabels from table={\datatable}{Bytes},
+    x tick label style={font=\normalsize, rotate=35, anchor=east, yshift=-2pt},
+    legend pos = outer north east,
+    xlabel={Allocation size (bytes)},
+    ylabel={Time (ms)}
+    }
+}
+
+\pgfplotsset{
+ scalePlot/.style={
+    small,
+    width = \columnwidth,
+    height = \columnwidth,
+    table/col sep=comma,
+    unbounded coords=jump,
+    xtick={1,16,256,4096,65336,1048576},
+    %xticklabels={1,4,16,64,256,1024,4096,16384,65336,262144,1048576},
+    %log ticks with fixed point,
+    %xticklabels from table={\datatable}{Bytes},
+    %x tick label style={font=\normalsize, rotate=75, anchor=east},
+    each nth point=2,
+    x tick label style={font=\normalsize},
+    log basis x=2,
+    xticklabel={\pgfmathfloatparsenumber{\tick}\pgfmathprintnumber{\pgfmathresult}},
+    legend pos = outer north east,
+    xlabel={Number of threads},
+    ylabel={Time (ms)}
+    }
+}
+
+
+\pgfplotsset{
+ tinyAllocPlot/.style={
+    small,
+    width = \columnwidth,
+    height = \columnwidth,
+    table/col sep=comma,
+    unbounded coords=jump,
+    xtick={16,64,256,1024,4096},
+    % xticklabels={16,32,64,128,256,512,1024,2048,4096},
+    log basis x=2,
+    xticklabel={\pgfmathfloatparsenumber{\tick}\pgfmathprintnumber{\pgfmathresult}},
+    %xticklabels from table={\datatable}{Bytes},
+    %each nth point=2,
+    x tick label style={font=\normalsize},
+    legend pos = outer north east,
+    xlabel={Allocation size (bytes)},
+    ylabel={Time (ms)}
+    }
+}
+
+
+\pgfplotsset{
+  graphPlot1/.style={
+        small,
+        ybar,
+        clip=true,
+        width = \columnwidth,
+        height =.5\columnwidth,
+        bar width=0.15cm,
+        ymajorgrids, tick align=inside,
+        major grid style={draw=white},
+        % enlarge y limits={value=.1,upper},
+        enlarge x limits={0.15},
+        % x=2.5cm,
+        ymin=0.1,
+        axis x line*=bottom,
+        axis y line*=left,
+        y axis line style={opacity=0},
+        % tickwidth=0pt,
+        % enlarge x limits=true,
+        ylabel={Time (ms)},
+        %symbolic x coords={
+        %   init,insert,insertRange,delete,
+        %   deleteRange},
+       xtick=data,
+       legend to name=graphLegend,
+       legend pos = outer north east,
+       point meta=rawy,
+       nodes near coords,
+       every node near coord/.append style={rotate = 90, anchor = west, font=\tiny,/pgf/number format/fixed relative,/pgf/number format/precision=2}
+  }
+}
+
+
+\pgfplotsset{
+  graphPlot2/.style={
+        small,
+        ybar,
+        clip=true,
+        width = \columnwidth,
+        height =.5*\columnwidth,
+        bar width=0.15cm,
+        ymajorgrids, tick align=inside,
+        major grid style={draw=white},
+        % enlarge y limits={value=.1,upper},
+        % enlarge x limits={0.25, left},
+        % x=2.5cm,
+        ymin=0.1,
+        axis x line*=bottom,
+        axis y line*=left,
+        y axis line style={opacity=0},
+        % tickwidth=0pt,
+        % enlarge x limits=true,
+        ylabel={Time (ms)},
+        %symbolic x coords={
+        %   init,insert,insertRange,delete,
+        %   deleteRange},
+       xtick=data,
+       %legend to name=graphLegend,
+       point meta=rawy,
+       nodes near coords,
+       every node near coord/.append style={rotate = 90, anchor = west, font=\tiny,/pgf/number format/fixed relative,/pgf/number format/precision=2}
+  }
+}
+
+\pgfplotsset{
+  OurStyle/.style     = {color = black,  mark = square*},
+  OuroPS/.style     = {color = orange,       mark = triangle*},
+  OuroPVA/.style     = {color = red,       mark = diamond*},
+  OuroPVL/.style     = {color = violet,       mark = pentagon*},
+  OuroCS/.style     = {color = gray,       mark = pentagon*},
+  OuroCVA/.style     = {color = cyan,       mark = pentagon*},
+  OuroCVL/.style     = {color = gray,       mark = triangle*},
+  RegEffC/.style     = {color = orange,       mark = pentagon*},
+  RegEffCF/.style     = {color = violet,       mark = diamond*},
+  RegEffCM/.style     = {color = magenta,       mark = diamond*},
+  RegEffCFM/.style     = {color = magenta,       mark = triangle*},
+  RegEffAW/.style     = {color = cyan,       mark = square*},
+  ScatterAlloc/.style     = {color = red,       mark = *},
+  XMalloc/.style     = {color = teal,       mark = square*},
+  Cuda/.style      = {color = gray,       mark = square*},
+  OurStyleGraph/.style = {fill = black},
+  OuroCSGraph/.style = {fill=gray},
+  OuroPSGraph/.style = {fill=orange},
+  OuroPVAGraph/.style = {fill=red},
+  OuroPVLGraph/.style = {fill=violet},
+  RegEffAWGraph/.style = {fill=cyan},
+}

@@ -1,0 +1,37 @@
+\begin{subfigure}{\columnwidth}
+
+\begin{tikzpicture}
+  \centering
+  \begin{axis}[
+    graphPlot1,
+    ymode = log,
+    symbolic x coords={init,insert,insertRange, delete, deleteRange},
+    legend columns = 3,
+    legend style={font=\small},
+    legend to name=graphLegend,
+    %xtick distance=.5,
+    %xticklabels from table={data/graph_original/orkut_BETA.txt}{op}
+    ]
+
+    %BETA OuroborosPVA OuroborosCS
+    \addplot[draw=none, OurStyleGraph, x=op, y=perf]   table {artifact_data/Gallatin-orkut.csv};
+    %\addplot[draw=none, fill=green!30, x=op, y=perf]   table {data/orkut_CUDA.txt};
+
+    \addplot[draw=none, OuroCSGraph, x=op, y=perf]   table {artifact_data/Ouroboros-C-S-orkut.csv};
+
+    %\addplot[draw=none, OuroPSGraph, x=op, y=perf]   table {data/graph_original/orkut_OuroborosPS.txt};
+    \addplot[draw=none, OuroPVAGraph, x=op, y=perf]   table {artifact_data/Ouroboros-P-VA-orkut.csv};
+
+    \addplot[draw=none, OuroPVLGraph, x=op, y=perf]   table {artifact_data/Ouroboros-P-VL-orkut.csv};
+
+    \addplot[draw=none, RegEffAWGraph, x=op, y=perf]   table {artifact_data/RegEff-AW-orkut.csv};
+    
+;
+    %\addplot[draw=none, fill=red!30]   table {data/test_graph_ouroborosCS.txt};
+    
+    \legend{\sysname, Ouroboros-C-S, Ouroboros-P-VA, Ouroboros-P-VL, Baseline (RegEff-AW)}
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Performance for insertions and deletions}
+  \label{fig:fullOrkut}
+\end{subfigure}

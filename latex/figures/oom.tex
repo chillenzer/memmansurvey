@@ -1,0 +1,51 @@
+\begin{figure*}[ht]
+    \centering
+\pgfplotstableread[col sep=comma,]{data/oom_100000_512-512.csv}\datatable
+\begin{tikzpicture}
+\begin{axis}[
+    width=\columnwidth,
+    height=10cm,
+    table/col sep=comma,
+    unbounded coords=jump,
+    xtick={16,32,64,128,256,512,1024,2048,4096},
+    xticklabels={16,32,64,128,256,512,1024,2048,4096},
+    %xticklabels from table={\datatable}{Bytes},
+    x tick label style={font=\normalsize, rotate=35, anchor=east},
+    xmode=log,
+    ymode=log,
+    legend pos = outer north east,
+    cycle list name = exotic,
+    ylabel={Time per Allocation (ms)},
+    xlabel={Allocation Size (Bytes)}]
+    
+    \addplot+[RegEffCFM] table [x=Bytes, y=RegEffCFM]{\datatable};
+    \addlegendentry{$RegEff-CFM$}
+
+    \addplot+[RegEffC] table [x=Bytes, y=RegEffC]{\datatable};
+    \addlegendentry{$RegEff-C$}
+
+    \addplot+[OuroCS] table [x=Bytes, y=OuroborosCS]{\datatable};
+    \addlegendentry{$Ouroboros-C-S$}
+    
+    \addplot+[Cuda] table [x=Bytes, y=CUDA]{\datatable};
+    \addlegendentry{$CUDA$}
+
+    % \addplot+[ScatterAlloc] table [x=Bytes, y=ScatterAlloc]{\datatable};
+    % \addlegendentry{$ScatterAlloc$}
+
+    \addplot+[RegEffCF] table [x=Bytes, y=RegEffCF]{\datatable};
+    \addlegendentry{$RegEff-CF$}
+
+    \addplot+[RegEffCM] table [x=Bytes, y=RegEffCM]{\datatable};
+    \addlegendentry{$RegEff-CM$}
+
+    \addplot+[OurStyle] table [x=Bytes, y=BETA]{\datatable};
+    \addlegendentry{\sysname - Us!}
+
+\end{axis}
+\end{tikzpicture}
+
+
+\caption{Single-sized allocation performance. All tests were run on 1,000,000 items.}
+\label{fig:alloc_perf}
+\end{figure*}

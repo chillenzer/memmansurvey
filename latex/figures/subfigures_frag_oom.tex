@@ -1,0 +1,16 @@
+\begin{figure*}[t]
+    %\ref{graphLegend}
+    \centering
+    %
+    \input{figures/frag_subfigure}%
+    %\hfill
+    \input{figures/mixed_frag_subfigure}%
+    %\hfill
+    \input{figures/oom_graph}
+
+    \vspace{-2em}
+    \caption{Fragmentation performance for both single-sized and mixed-size allocations, along with the memory utilization performance. 
+    % All tests were run with 1,000,000 allocations. 
+    (a,b) For the fragmentation tests, the x-axis is the allocation size for the single-sized test and the upper bound of the range for the mixed-size test, with the lower bound being fixed at 16 bytes. The y-axis is the difference between the highest and lowest address given for an allocation. Lower is better. 
+    (c) For the utilization tests, the y-axis is a ratio compared to the maximum possible number of allocations that could be given. Higher is better.}
+\end{figure*}

@@ -1,0 +1,67 @@
+\begin{subfigure}{.33\linewidth}
+    \centering
+\pgfplotstableread[col sep=comma,]{artifact_data/mixed_frag_1000000_4-4096.csv}\datatable
+
+
+\begin{tikzpicture}
+\begin{axis}[
+    fragOOMPlot,
+    xmode=log,
+    ymode=log,
+    ylabel={Allocation byte range}
+    ]
+
+
+    %RegEff_CFM,XMalloc,RegEff_CM
+    \addplot[OuroPVA] table [x=Bytes, y=Ouroboros-P-VA - range]{\datatable};
+    %\addlegendentry{$Ouroboros-P-VA$}
+
+    \addplot[RegEffC] table [x=Bytes, y=RegEff-C - range]{\datatable};
+    %\addlegendentry{$RegEff-C$}
+
+    % \addplot[OuroCVA] table [x=Bytes, y=OuroborosCVA]{\datatable};
+    % %\addlegendentry{$Ouroboros-C-VA$}
+
+    \addplot[Cuda] table [x=Bytes, y=CUDA - range]{\datatable};
+    %\addlegendentry{$CUDA$}
+
+    \addplot[OuroCVL] table [x=Bytes, y=Ouroboros-C-VL - range]{\datatable};
+    %\addlegendentry{$Ouroboros-C-VL$}
+    
+    \addplot[OurStyle] table [x=Bytes, y=Gallatin - range]{\datatable};
+    %\addlegendentry{$\sysname$}
+    
+    \addplot[RegEffCF] table [x=Bytes, y=RegEff-CF - range]{\datatable};
+    %\addlegendentry{$RegEff-CF$}
+
+    \addplot[OuroPVL] table [x=Bytes, y=Ouroboros-P-VL - range]{\datatable};
+    %\addlegendentry{$Ouroboros-P-VL$}
+
+    \addplot[OuroCS] table [x=Bytes, y=Ouroboros-C-S - range]{\datatable};
+    %\addlegendentry{$Ouroboros-C-S$}
+
+    \addplot[RegEffAW] table [x=Bytes, y=RegEff-AW - range]{\datatable};
+    %\addlegendentry{$RegEff-AW$}
+
+    \addplot[OuroPS] table [x=Bytes, y=Ouroboros-P-S - range]{\datatable};
+    %\addlegendentry{$Ouroboros-P-S$}
+
+    \addplot[RegEffCFM] table [x=Bytes, y=RegEff-CFM - range]{\datatable};
+    %\addlegendentry{$RegEff-CFM$}
+
+    \addplot[RegEffCM] table [x=Bytes, y=RegEff-CM - range]{\datatable};
+    %\addlegendentry{$RegEff-CM$}
+
+
+    %doesn't work at all
+    % \addplot[mark=0] table [x=Bytes, y=ScatterAlloc]{\datatable};
+    % %\addlegendentry{$ScatterAlloc$}
+
+
+\end{axis}
+\end{tikzpicture}
+
+
+\caption{Mixed-size fragmentation}
+\label{fig:fragFig}
+\end{subfigure}

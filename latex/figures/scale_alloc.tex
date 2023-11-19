@@ -1,0 +1,76 @@
+\begin{figure*}[ht]
+    \centering
+\pgfplotstableread[col sep=comma,]{data/scale_alloc_16_1-1048576.csv}\datatable
+\begin{tikzpicture}
+\begin{axis}[
+    width=.8*\textwidth,
+    height=10cm,
+    table/col sep=comma,
+    unbounded coords=jump,
+    xtick={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65336,131072,262144,524288,1048576},
+    xticklabels={1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65336,131072,262144,524288,1048576},
+    %xticklabels from table={\datatable}{Bytes},
+    x tick label style={font=\normalsize, rotate=35, anchor=east},
+    xmode=log,
+    ymode=log,
+    legend pos = outer north east,
+    ylabel={Time per Allocation (ms)},
+    xlabel={Allocation Size (Bytes)}]
+
+
+    %Threads,RegEffAW,,XMalloc
+    
+    \addplot[RegEffCFM] table [x=Threads, y=RegEffCFM]{\datatable};
+    %\addlegendentry{$RegEff-CFM$}
+
+    \addplot[RegEffC] table [x=Threads, y=RegEffC]{\datatable};
+    %\addlegendentry{$RegEff-C$}
+
+    \addplot[OuroCS] table [x=Threads, y=OuroborosCS]{\datatable};
+    %\addlegendentry{$Ouroboros-C-S$}
+    
+    \addplot[Cuda] table [x=Threads, y=CUDA]{\datatable};
+    %\addlegendentry{$CUDA$}
+
+    \addplot[ScatterAlloc] table [x=Threads, y=ScatterAlloc]{\datatable};
+    %\addlegendentry{$ScatterAlloc$}
+
+    \addplot[RegEffCF] table [x=Threads, y=RegEffCF]{\datatable};
+    %\addlegendentry{$RegEff-CF$}
+
+    \addplot[RegEffCM] table [x=Threads, y=RegEffCM]{\datatable};
+    %\addlegendentry{$RegEff-CM$}
+
+    \addplot[OurStyle] table [x=Threads, y=BETA]{\datatable};
+    %\addlegendentry{\sysname - Us!}
+
+    \addplot[OuroPVL] table [x=Threads, y=OuroborosPVL]{\datatable};
+    %\addlegendentry{$Ouroboros P-VL$}
+
+
+    \addplot[OuroPS] table [x=Threads, y=OuroborosPS]{\datatable};
+    %\addlegendentry{$Ouroboros P-S$}
+
+    \addplot[OuroPVA] table [x=Threads, y=OuroborosPVA]{\datatable};
+    %\addlegendentry{$Ouroboros P-VA$}
+
+    \addplot[OuroCVA] table [x=Threads, y=OuroborosCVA]{\datatable};
+    %\addlegendentry{$Ouroboros C-VA$}
+
+    \addplot[OuroCVL] table [x=Threads, y=OuroborosCVL]{\datatable};
+    %\addlegendentry{$Ouroboros C-VL$}
+
+    \addplot[XMalloc] table [x=Threads, y=XMalloc]{\datatable};
+    %\addlegendentry{$XMalloc$}
+
+    \addplot[RegEffAW] table [x=Threads, y=RegEffAW]{\datatable};
+    %\addlegendentry{$RegEff-AW$}
+
+
+\end{axis}
+\end{tikzpicture}
+
+
+\caption{Measuring allocation performance as the number of simultaneous threads increases. All allocations are 16 bytes.}
+\label{fig:alloc_scale}
+\end{figure*}

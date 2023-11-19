@@ -1,0 +1,59 @@
+\begin{subfigure}{.5\columnwidth}
+
+\pgfplotstableread[col sep=comma,]{artifact_data/perf_free_1000000_16-4096.csv}\datatable
+\begin{tikzpicture}
+\begin{axis}[
+    tinyAllocPlot,
+    xmode=log,
+    ymode=log]
+    
+    \addplot[RegEffAW] table [x=Bytes, y=RegEff-AW]{\datatable};
+    %\addlegendentry{$Baseline (RegEff-AW)$}
+
+    \addplot[Cuda] table [x=Bytes, y=CUDA]{\datatable};
+    %\addlegendentry{$CUDA$}
+
+    \addplot[ScatterAlloc] table [x=Bytes, y=ScatterAlloc]{\datatable};
+    %\addlegendentry{$ScatterAlloc$}
+
+    \addplot[OuroPS] table [x=Bytes, y=Ouroboros-P-S]{\datatable};
+    %\addlegendentry{$Ouroboros-P-S$}
+
+    \addplot[OuroPVA] table [x=Bytes, y=Ouroboros-P-VA]{\datatable};
+    %\addlegendentry{$Ouroboros-P-VA$}
+
+    \addplot[OuroPVL] table [x=Bytes, y=Ouroboros-P-VL]{\datatable};
+    %\addlegendentry{$Ouroboros-P-VL$}
+
+    \addplot[OuroCS] table [x=Bytes, y=Ouroboros-C-S]{\datatable};
+    %\addlegendentry{$Ouroboros-C-S$}
+
+    \addplot[OuroCVA] table [x=Bytes, y=Ouroboros-C-VA]{\datatable};
+    %\addlegendentry{$Ouroboros-C-VA$}
+
+    \addplot[OuroCVL] table [x=Bytes, y=Ouroboros-C-VL]{\datatable};
+    %\addlegendentry{$Ouroboros-C-VL$}
+
+    \addplot[RegEffC] table [x=Bytes, y=RegEff-C]{\datatable};
+    %\addlegendentry{$RegEff-C$}
+    
+    \addplot[RegEffCF] table [x=Bytes, y=RegEff-CF]{\datatable};
+    %\addlegendentry{$RegEff-CF$}
+
+    \addplot[RegEffCM] table [x=Bytes, y=RegEff-CM]{\datatable};
+    %\addlegendentry{$RegEff-CM$}
+
+    \addplot[RegEffCFM] table [x=Bytes, y=RegEff-CFM]{\datatable};
+    %\addlegendentry{$RegEff-CFM$}
+
+    \addplot[OurStyle] table [x=Bytes, y=Gallatin]{\datatable};
+    %\addlegendentry{$\sysname$}
+
+
+\end{axis}
+\end{tikzpicture}
+
+
+\caption{Single-sized free}
+\label{fig:free_perf_subfigure}
+\end{subfigure}

@@ -1,0 +1,6 @@
+op perf
+init 13.7739
+delete 5.27285
+insert 0.520964
+deleteRange 3.27032
+insertRange 0.179813

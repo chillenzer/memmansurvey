@@ -1,0 +1,26 @@
+\begin{figure*}
+
+\pgfplotstableread[col sep=comma,]{data/oom_512_512.csv}\datatable
+
+\begin{tikzpicture}
+  \centering
+  \begin{axis}[
+        width=.8*\textwidth,
+        height=10cm,
+        ybar,
+        xlabel={Allocator},
+        xtick=data,
+        xticklabels from table={\datatable}{Alloc},
+        x tick label style={font=\normalsize, rotate=35, anchor=east},
+        ylabel={Ratio (\%)}]
+
+        
+       \addplot table [x expr=\coordindex, y=Ratio]{\datatable};
+
+
+       
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Out-of-Memory tests: allocations are performed in batches of 100,000 until failure.}
+  \label{fig:oom_bar}
+\end{figure*}

@@ -58,10 +58,10 @@ for file, name in filepaths:
 
 	dataframe = []
 
-	if "oom" in clipped_name:
-		dataframe = pd.read_csv(file, header=1).fillna(0).transpose()
-	else:
-		dataframe = pd.read_csv(file).fillna(0).transpose()
+	# if "oom" in clipped_name:
+	# 	dataframe = pd.read_csv(file, header=1).fillna(0).transpose()
+	# else:
+	dataframe = pd.read_csv(file).fillna(0).transpose()
 
 	#replace headers
 

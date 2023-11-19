@@ -1,0 +1,15 @@
+\begin{figure*}[t]
+    \centering
+    %\hspace{-.2\linewidth}%
+    \input{figures/scale_subfigs/alloc_16}%
+    \input{figures/scale_subfigs/alloc_64}%
+    \input{figures/scale_subfigs/alloc_512}%
+    \input{figures/scale_subfigs/alloc_8192}
+
+    \input{figures/scale_subfigs/free_16}%
+    \input{figures/scale_subfigs/free_64}%
+    \input{figures/scale_subfigs/free_512}%
+    \input{figures/scale_subfigs/free_8192}
+
+    \caption{Scaling allocation tests and free tests for various allocation sizes. The x-axis is the $\log_2$ of the number of threads with the allocation size held constant. The y-axis is the median latency per thread over 50 runs. Lower is better.}
+\end{figure*}
