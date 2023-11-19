@@ -30,7 +30,6 @@ echo "Download finished, running experiments"
 
 python3 testLarge.py -mem_size 8 -device 0 -runtest -genres
 
+echo "Building PDF"
 
-echo "Generating results"
-
-python3 install_scripts/process_for_latex.py results artifact_data
+./install_scripts/process_results.sh
