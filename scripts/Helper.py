@@ -182,24 +182,24 @@ def generateResultsFromFileFragmentationMixed(folderpath, param1, param2, param3
 	written_header_frag = False
 	for file in os.listdir(folderpath):
 		filename = folderpath + str("/") + os.fsdecode(file)
-		print("Processing: ",filename)
+		#print("Processing: ",filename)
 		if(os.path.isdir(filename)):
 			continue
 		if str("frag") != filename.split('/')[1].split('_')[1]:
 			continue
 
-		print("Passed frag")
+		#print("Passed frag")
 
 		extracted_p1 = filename.split("_")[approach_pos+1];
 
-		print("extracted_p1 = ", extracted_p1)
+		#print("extracted_p1 = ", extracted_p1)
 
 		if str(param1) != filename.split('_')[approach_pos+1]:
 			continue
 
 		extracted_p2_p3 = filename.split('_')[approach_pos+2].split(".")[0]
 
-		print("extracted_p2_p3, ", extracted_p2_p3)
+		#print("extracted_p2_p3, ", extracted_p2_p3)
 
 		if str(param2) + "-" + str(param3) != filename.split('_')[approach_pos+2].split(".")[0]:
 			continue
