@@ -199,7 +199,7 @@ def generateResultsFromFileFragmentationMixed(folderpath, param1, param2, param3
 
 		extracted_p2_p3 = filename.split('_')[approach_pos+2].split(".")[0]
 
-		print("extracted_p2_p3, " extracted_p2_p3)
+		print("extracted_p2_p3, ", extracted_p2_p3)
 
 		if str(param2) + "-" + str(param3) != filename.split('_')[approach_pos+2].split(".")[0]:
 			continue
