@@ -234,8 +234,8 @@ def generateResultsFromFileFragmentationMixed(folderpath, param1, param2, param3
 
 	# Generate output file
 	print("------------------")
-	print("Generating -> " + time_string + str("_frag_") + str(param1) + "_" + str(param2) + "-" + str(param3) + str(".csv"))
-	frag_name = folderpath + str("/aggregate/") + time_string +  str("_frag_") + str(param1) + "_" + str(param2) + "-" + str(param3) + str(".csv")
+	print("Generating -> " + time_string + str("_mixed_frag_") + str(param1) + "_" + str(param2) + "-" + str(param3) + str(".csv"))
+	frag_name = folderpath + str("/aggregate/") + time_string +  str("_mixed_frag_") + str(param1) + "_" + str(param2) + "-" + str(param3) + str(".csv")
 	with(open(frag_name, "w", newline='')) as f:
 		writer = csv.writer(f, delimiter=',')
 		for row in result_frag:
