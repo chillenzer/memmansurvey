@@ -129,16 +129,15 @@ def main():
 	# 		["python test_synth_workload.py -t o+s+c+r+x+b -threadrange 0-20 -range 16-4096 -iter 5 {0} {1} -testwrite -timeout 100 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""]
 	# 	],
 	# 	"frag_tests"  : [
-	# 		["python test_fragmentation.py -t o+c+r+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-	# 		["python test_oom.py -t o+c+r+b -num 100000 -range 512-512 {0} {1} -timeout 120 -allocsize 2".format(runteststr, genresstr), ""]
+			# ["python test_fragmentation.py -t o+s+c+r+x+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			# ["python test_mixed_fragmentation.py -t o+s+c+r+x+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
+			# ["python test_oom.py -t o+s+c+r+x+b -num 100000 -range 4-8192 {0} {1} -timeout 120 -allocsize 2".format(runteststr, genresstr), ""]
 	# 	]
 	# }
 
 	tests = {
 		"frag_tests"  : [
-			["python test_fragmentation.py -t o+s+c+r+x+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			["python test_mixed_fragmentation.py -t o+s+c+r+x+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			["python test_oom.py -t o+s+c+r+x+b -num 100000 -range 512-512 {0} {1} -timeout 120 -allocsize 2".format(runteststr, genresstr), ""]
+			["python test_oom.py -t o+s+c+r+x+b -num 100000 -range 4-8192 {0} {1} -timeout 120 -allocsize 2".format(runteststr, genresstr), ""]
 		]
 	}
 
