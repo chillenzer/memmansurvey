@@ -267,6 +267,8 @@ for file, name in filepaths:
 
 	dataframe.reset_index(drop=False)
 
+	dataframe.rename(columns=lambda x: x.strip(), inplace=True)
+
 	#print("Final DF view")
 	#print(dataframe)
 
@@ -370,5 +372,3 @@ for key in output_dataframes:
 
 
 	#print(dataframe)
-
-

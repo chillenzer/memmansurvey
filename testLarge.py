@@ -131,7 +131,7 @@ def main():
 		"frag_tests"  : [
 			["python test_fragmentation.py -t o+s+c+r+x+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
 			["python test_mixed_fragmentation.py -t o+s+c+r+x+b -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), ""],
-			["python test_oom.py -t o+s+c+r+x+b -num 100000 -range 4-8192 {0} {1} -timeout 120 -allocsize 2".format(runteststr, genresstr), ""]
+			["python test_oom.py -t o+s+c+r+x+b -num 100000 -range 4-8192 {0} {1} -timeout 200 -allocsize 8".format(runteststr, genresstr), ""]
 		]
 	}
 
@@ -176,7 +176,7 @@ def main():
 			if command[1] != "":
 				if not os.path.exists(os.path.join(full_path, "results", command[1])):
 					os.mkdir(os.path.join(full_path, "results", command[1]))
-			Command(command[0]).run(timeout=20000)
+			Command(command[0]).run(timeout=30000)
 			if args.genres:
 				aggregate_path = os.path.join(full_path, "results", command[1], "aggregate")
 				for file in os.listdir(aggregate_path):
