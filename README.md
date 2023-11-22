@@ -1,8 +1,4 @@
-
-##UNDER CONSTRUCTION
-This repo is being changed in preparation for PPOPP`24 Artifact Evaluation. Details and internal scripts are subject to change, check back in on November 17th for a more finalized version.
-
-# GPUMemManSurvey
+## GPUMemManSurvey
 Evaluating different memory managers for dynamic GPU memory allocation.
 
 This is a fork of the original GPUMemManSurvey found at `https://github.com/GPUPeople/GPUMemManSurvey`.
