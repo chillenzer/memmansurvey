@@ -1,5 +1,5 @@
 ## GPUMemManSurvey
-Evaluating different memory managers for dynamic GPU memory allocation.
+This benchmarking suite evaluates different memory managers against the Gallatin memory manager for dynamic GPU memory allocation.
 
 This is a fork of the original GPUMemManSurvey found at `https://github.com/GPUPeople/GPUMemManSurvey`.
 
@@ -53,6 +53,7 @@ The only parameter your script takes is your architecture. For example, running 
 
 ```nohup ./install_scripts/download_and_run.sh 86 &```
 
+To test only Gallatin, run ```nohup ./install_scripts/download_and_run_only_gallatin.sh 86 &```. On the A40, this runs in approximately .. minutes
 
 ## Option B: Run all steps manually
 
@@ -73,19 +74,17 @@ Determine your architecture using the section above.
 
 # 3. Curl Graphs
 
-download graphs by running `./install_scripts/graph_curl.sh`. This will download the `orkut.mtx` graph and place it in `tests/graph_tests/data`.
+download graphs by running `./install_scripts/graph_curl.sh`. This will download the `orkut.mtx` graph from a Zenodo link and place it in `tests/graph_tests/data`.
 
 
 # 4. Init 
 
-Initialize the repository with `python`
-
-`python init.py`.
+Initialize the repository with `python init.py`. This verifies that boost has been installed.
 
 
 # 5. Build
 
-`python setupAll.py --cc YOUR_ARCHITECTURE`
+Run `python setupAll.py --cc YOUR_ARCHITECTURE` to compile all tests. Each test suite has it's own CMake file that can be built independently using the `setup.py` file located in the test directory.
 
 # 6. Run!
 
@@ -93,6 +92,10 @@ To run a representative testsuite, simply call
 * `python testAll.py -mem_size 8 -device 0 -runtest -genres`
   * The memory size is in GB
   * The device ID of the device to use (has to match with the CC passed in build stage)
+
+
+If you only want results for Gallatin, you can call `python3 testGallatin.py -mem_size 8 -device 0 -runtest -genres
+`.
 
 # clean/reset
 

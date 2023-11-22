@@ -107,8 +107,8 @@ def main():
 	# Which tests to run
 	tests = {
 		"alloc_tests" : [
-			["python test_allocation.py -t f+o+s+c+r+b -num 1000000 -range 16-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), "performance"],
-			["python test_mixed_allocation.py -t f+o+s+c+r+b -num 1000000 -range 16-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), "mixed_performance"],
+			["python test_allocation.py -t f+o+s+c+r+g -num 1000000 -range 16-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), "performance"],
+			["python test_mixed_allocation.py -t f+o+s+c+r+g -num 1000000 -range 16-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), "mixed_performance"],
 			["python test_scaling.py -t f+o+s+c+r+g -byterange 16-16 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), "scaling"],
 			["python test_scaling.py -t f+o+s+c+r+g -byterange 64-64 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), "scaling"],
 			["python test_scaling.py -t f+o+s+c+r+g -byterange 512-512 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}".format(runteststr, genresstr, str(args.mem_size), str(args.device)), "scaling"],
