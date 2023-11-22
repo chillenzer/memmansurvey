@@ -58,7 +58,7 @@ def main():
 	if(args.t):
 		if any("c" in s for s in args.t):
 			testcases["CUDA"] = os.path.join(build_path, str("c_mixed_alloc_test") + executable_extension)
-		if any("b" in s for s in args.t):
+		if any("g" in s for s in args.t):
 			testcases["Gallatin"] = os.path.join(build_path, str("b_mixed_alloc_test") + executable_extension)
 		if any("x" in s for s in args.t):
 			testcases["XMalloc"] = os.path.join(build_path, str("x_mixed_alloc_test") + executable_extension)

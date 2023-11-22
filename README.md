@@ -10,63 +10,22 @@ This is a fork of the original GPUMemManSurvey found at `https://github.com/GPUP
 Here are the step-by-step instructions necessary to build and test Gallatin.
 
 # Requirements
-
-The framework was tested on an A40 with architecture version sm_86 and CUDA 12.1. The experiments should work for any version of CUDA 11.7 (cooperative groups and cooperative group reductions are required.). Gallatin should build and run for volta architecture, but this hasn't been tested. Performance may differ on older architectures as hardware accelleartion is not available for some instructions.
-
-
-## Option A: Bash script
-
-Inside of the repo is a bash script `download_and_test.sh` that will run all of the steps below in order.
-
-On an A40, the tests take about 12 hours to complete. It is recommended to `nohup` the command  
-
-# 1. Determine your architecture code
-
-Go to `https://developer.nvidia.com/cuda-gpus` to determine the compute capability of your device.
-
-For example, if your device was an A10, you would have compute capability 8.6, so your version would be `86`.
-
-
-# 2. Clone/Init submodules and download graphs with LFS.
-
-  Pull a fresh clone with submodules via `--recurse-submodules` or initialize the submodules with
-
-  ```
-  git submodule init
-  git submodule update
-  ```
-
-
-  Once the repo is initialized, pull the graph files with `git lfs pull`.
-
-
-# 3. Init 
-
-
-`python testLarge --cc YOUR_VERSION`.
-
-
-
-
-# Requirements
-The framework was tested on Windows 10, Arch Linux <5.9.9> as well as Manjaro <5.4>
+The framework was tested on Ubuntu <20.04.6 LTS>
 * **CUDA Toolkit**
-  * Tested on `10.1`, `10.2`, `11.0` and `11.1`
+  * Tested on `12.0` and `12.1`
     * Windows [Download](https://developer.nvidia.com/cuda-downloads)
     * Arch Linux (`pacman -S cuda`)
 * **C++ Compiler**
   * Tested on
-    * `gcc 9.0` and `gcc 10.2`
+    * `gcc 9.4`
       * Arch Linux (`pacman -S gcc`)
-    * `VS 2019`
-      * [Download](https://visualstudio.microsoft.com/vs/community/)
 * **boost** (required for ScatterAlloc)
-  * Tested with boost `1.66` and `1.74`
+  * Tested with boost `1.71`
     * Windows [Download](https://www.boost.org/users/download/)
       * Set the installed location in `BaseCMake.cmake`
     * Arch Linux (`pacman -S boost`)
 * **CMake**
-  * Version `>= 3.16`, tested with `3.18`
+  * Version `>= 3.18`, tested with `3.27`
     * Windows [Download](https://cmake.org/download/)
     * Arch Linux (`pacman -S cmake`)
 
@@ -76,55 +35,74 @@ The framework was tested on Windows 10, Arch Linux <5.9.9> as well as Manjaro <5
     * Arch Linux (`pacman -S python`)
   * Requires packages
     * `argparse` (`python pip -m install argparse`)
+* **PDFLatex**
+  * Tested with `pdfTeX 3.141592653-2.6-1.40.25`
 
-# Setup Instructions
-* Make sure all requirements are installed and configured correctly
-  * On `Windows` also set the correct boost path in `BaseCMake.cmake`
-* **Setup**
-  * **Option A:** Setup from Archive
-    * Extract archive
-    * In top-level directory, call
-      * `git submodule init`
-      * `git submodule update`
-  * **Option B:** Setup from GitHub
-    * `git clone --recursive -b AEsubmission https://github.com/GPUPeople/GPUMemManSurvey.git`
-* `python init.py`
-* **Install**
-  * On `Windows` use the `Developer PowerShell for VS 20XX` (`msbuild` is needed) to call the scripts
-  * **Option A:**
-    * If you want to build everything, call `python setupAll.py --cc XX`, set correct CC (tested with 61, 70 and 75)
-  * **OptionB:**
-    * You can build each testcase separately, there is a `setup.py` in each tests folder
-      * `python setup.py --cc XX`, set correct CC tested with 61, 70, 75
-* To **clean/reset** the build folders, simply call `python cleanAll.py`
-  * Once again, there is a separate `clean.py` in every test subfolder
+The framework was tested on an A40 with architecture version `sm_86` and CUDA 12.1. Gallatin should build and run for volta architecture, but this hasn't been tested. Performance may differ on older architectures as hardware accelleartion is not available for some instructions.
 
-# Testcase Instructions
+# Determine your architecture code
+
+Your architecture is required as an input. Go to `https://developer.nvidia.com/cuda-gpus` to determine the compute capability of your device.
+
+For example, if your device was an A10, you would have compute capability 8.6, so your architecture version would be `86`.
+
+
+## Option A: Bash script
+
+Inside of the repo is a bash script `download_and_run.sh` that will run all of the steps below in order.
+
+On an A40, the tests take about 12 hours to complete. It is recommended to `nohup` the command and let it run overnight.
+
+The only parameter your script takes is your architecture. For example, running on an A40, this is executed as 
+
+```nohup ./install_scripts/download_and_run.sh 86 &```
+
+
+## Option B: Run all steps manually
+
+
+# 1. Determine architecture
+
+Determine your architecture using the section above.
+
+
+# 2. Clone/Init submodules 
+
+  Pull a fresh clone with submodules via `--recurse-submodules` or initialize the submodules with
+
+  ```
+  git submodule init
+  git submodule update
+  ```
+
+# 3. Curl Graphs
+
+download graphs by running `./install_scripts/graph_curl.sh`. This will download the `orkut.mtx` graph and place it in `tests/graph_tests/data`.
+
+
+# 4. Init 
+
+Initialize the repository with `python`
+
+`python init.py`.
+
+
+# 5. Build
+
+`python setupAll.py --cc YOUR_ARCHITECTURE`
+
+# 6. Run!
+
 To run a representative testsuite, simply call
 * `python testAll.py -mem_size 8 -device 0 -runtest -genres`
   * The memory size is in GB
   * The device ID of the device to use (has to match with the CC passed in build stage)
-  
-These runtime measures were measured for the limited testcase as setup in `testAll.py` on a TITAN V and an Intel Core i7-8700X on Windows 10 and Manjaro respectively.
 
-| Task | Time (min:sec) - Linux| Time (min:sec) - Windows|
-|:---:|:---:|:---:|
-|Overall|28 min 28 sec|1 h 3 min 47 sec|
-|Build | 9 min 45 sec | 28 min 15 sec |
-|Test All |18 min 43 sec| 35 min 32 sec|
-|-|-|-|
-| Allocation|1 min 48 sec| 2 min 39 sec |
-| Mixed Allocation | 0 min 35 sec | 2 min 46 sec |
-| Scaling | 2 min 52 sec | 4 min 03 sec |
-| Fragmentation | 1 min 47 sec | 2 min 36 sec |
-| Out-of-Memory | 7 min 15 sec | 8 min 21 sec |
-|Graph Init| 0 min 11 sec | 1 min 44 sec |
-| Graph Update | 0 min 11 sec | 1 min 44 sec |
-| Graph Update Range | 0 min 11 sec | 1 min 44 sec|
-| Register Footprint | 0 min 03 sec | 0 min 05 sec| 
-| Initialization | 0 min 05 sec | 0 min 12 sec |
-| Synthetic Workload | 1 min 58 sec | 4 min 50 sec |
-| Synthetic Workload Write | 1 min 57 sec | 4 min 48 sec |
+# clean/reset
+
+To clean or reset the build folders, simply call `python cleanAll.py`
+  * There is a separate `clean.py` in every test subfolder
+
 
 The framework **does not perform many sanity checks**, please read the documentation first if something is not working as expected if some parameter was not configured correctly for example.
 
@@ -135,14 +113,17 @@ The framework **does not perform many sanity checks**, please read the documenta
 * `tests` -> all test implementations
   * `alloc_test` -> all allocation tests
     * `test_allocation.py`
-    * `test_mixed_allocation.py`
+    * `test_mixed_allocation.py` 
     * `test_scaling.py`
   * `frag_test` -> all memory/fragmentation tests
     * `test_fragmenation.py`
+    * `test_mixed_fragmentation.py`
     * `test_oom.py`
   * `graph_test` -> all graph tests
     * `test_graph_init.py`
     * `test_graph_update.py`
+    * `test_graph_expansion_init.py`
+    * `test_graph_expansion.py`
   * `synth_test` -> all synthetic tests
     * `test_registers.py`
     * `test_synth_init.py`
@@ -152,14 +133,15 @@ The framework **does not perform many sanity checks**, please read the documenta
 | Framework | Status | Paper | Code |
 |:---:|:---:|:---:| :---:|
 | CUDA Device Allocator 		| :heavy_check_mark: | - | - |
-| XMalloc (2010)				| :heavy_check_mark: | [Webpage](http://hdl.handle.net/2142/16137) | - |
-| ScatterAlloc (2012) 			| :heavy_check_mark: | [Webpage](https://ieeexplore.ieee.org/document/6339604) | [GitHub - Repository](https://github.com/ax3l/scatteralloc) |
+| XMalloc (2010)				| :x: | [Webpage](http://hdl.handle.net/2142/16137) | - |
+| ScatterAlloc (2012) 			| :x: | [Webpage](https://ieeexplore.ieee.org/document/6339604) | [GitHub - Repository](https://github.com/ax3l/scatteralloc) |
 | FDGMalloc (2013) 			    | :question: 		 | [Webpage](https://www.gcc.tu-darmstadt.de/media/gcc/papers/Widmer_2013_FDM.pdf) | [Webpage](https://www.gcc.tu-darmstadt.de/home/proj/fdgmalloc/index.en.jsp) |
 | Register Efficient (2014)	    | :heavy_check_mark: | [Webpage](https://diglib.eg.org/bitstream/handle/10.2312/hpg.20141090.019-027/019-027.pdf?sequence=1&isAllowed=y) | [Webpage](http://decibel.fi.muni.cz/~xvinkl/CMalloc/) |
-| Halloc (2014)				    | :heavy_check_mark: | [Presentation](http://on-demand.gputechconf.com/gtc/2014/presentations/S4271-halloc-high-throughput-dynamic-memory-allocator.pdf) | [GitHub - Repository](https://github.com/canonizer/halloc) |
+| Halloc (2014)				    | :x: | [Presentation](http://on-demand.gputechconf.com/gtc/2014/presentations/S4271-halloc-high-throughput-dynamic-memory-allocator.pdf) | [GitHub - Repository](https://github.com/canonizer/halloc) |
 | DynaSOAr (2019)               | :x: 	 | [Webpage](https://drops.dagstuhl.de/opus/volltexte/2019/10809/pdf/LIPIcs-ECOOP-2019-17.pdf) | [GitHub - Repository](https://github.com/prg-titech/dynasoar)|
 | Bulk-Sempaphore (2019)		| :x: 			 | [Webpage](https://research.nvidia.com/publication/2019-02_Throughput-oriented-GPU-memory) | - |
 | Ouroboros (2020)			    | :heavy_check_mark: | [Paper](https://dl.acm.org/doi/pdf/10.1145/3392717.3392742) | [GitHub - Repository](https://github.com/GPUPeople/Ouroboros) |
+| Gallatin (2023) | :heavy_check_mark: | Paper Under Revision | [Github - Repository](https://github.com/saltsystemslab/gallatin)
 
 # Testcases
 Each testcase is controlled and executed via python scripts, a commonality of all scripts is that to run the testcase, one has to pass `-runtest` to the script, to gather all results into one file one can pass `-genres`.
@@ -171,21 +153,50 @@ This table shows which test file can be used to generate which plot used in the 
 
 | Figure/Section | Script | Command |
 |:---:|:---:|:---:|
-|Sec. `4.1`|`test_registers.py`|`python test_registers.py -t o+s+h+c+r+x -runtest -genres -allocsize 8 -device 0`|
-|Sec. `4.1`|`test_synth_init.py`|`python test_synth_init.py -t o+s+h+c+r+x -runtest -genres -allocsize 8 -device 0`|
-|Fig. `9.a`|`test_allocation.py`|`python test_allocation.py -t o+s+h+c+r+x -num 100000 -range 4-8192 -iter 100 -runtest -genres -timeout 120 -allocsize 8 -device 0`|
-|Fig. `9.b`|`test_allocation.py`|`python test_allocation.py -t o+s+h+c+r+x -num 100000 -range 4-8192 -iter 100 -runtest -genres -timeout 120 -allocsize 8 -device 0`|
-|Fig. `9.c`|`test_allocation.py`|`python test_allocation.py -t o+s+h+c+r+x -num 10000 -range 4-8192 -iter 100 -runtest -genres -warp -timeout 120 -allocsize 8 -device 0`|
-|Fig. `9.d`|`test_mixed_allocation.py`|`python test_mixed_allocation.py -t o+s+h+c+r+x -num 10000 -range 4-8192 -iter 100 -runtest -genres -timeout 120 -allocsize 8 -device 0`|
-|Fig. `10.x`|`test_scaling.py`|`python test_scaling.py -t o+s+h+c+r+x -byterange 4-8192 -threadrange 0-20 -iter 100 -runtest -genres -timeout 300 -allocsize 8 -device 0`|
-|Fig. `11.a`|`test_fragmentation.py`|`python test_fragmentation.py -t o+s+h+c+r+x -num 100000 -range 4-8192 -iter 100 -runtest -genres -timeout 60 -allocsize 8 -device 0`|
-|Fig. `11.b`|`test_oom.py`|`python test_oom.py -t o+s+h+c+r+x -num 100000 -range 4-8192 -runtest -genres -timeout 3600 -allocsize 2 -device 0`|
-|Fig. `11.c`|`test_synth_workload.py`|`python test_synth_workload.py -t o+s+h+c+r+x -threadrange 0-20 -range 4-64 -iter 100 -runtest -genres -timeout 300 -allocsize 8 -device 0`|
-|Fig. `11.d`|`test_synth_workload.py`|`python test_synth_workload.py -t o+s+h+c+r+x -threadrange 0-20 -range 4-4096 -iter 100 -runtest -genres -timeout 300 -allocsize 8 -device 0`|
-|Fig. `11.e`|`test_synth_workload.py`|`python test_synth_workload.py -t o+s+h+c+r+x -threadrange 0-20 -range 4-64 -iter 100 -runtest -genres -timeout 300 -allocsize 8 -device 0 -testwrite`|
-|Fig. `11.f`|`test_graph_init.py`|`python test_graph_init.py -t o+s+h+c+r+x -configfile config_init.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
-|Fig. `11.g`|`test_graph_update.py`|`python test_graph_update.py -t o+s+h+c+r+x -configfile config_update_range.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
+|Fig. `4.a`|`test_allocation.py`|`python test_allocation.py -t f+o+s+c+r+b -num 1000000 -range 16-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `4.b`|`test_allocation.py`|`python test_allocation.py -t f+o+s+c+r+b -num 1000000 -range 16-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `4.c`|`test_mixed_allocation.py`|`"python test_mixed_allocation.py -t f+o+s+c+r+b -num 1000000 -range 16-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `4.d`|`test_mixed_allocation.py`|`"python test_mixed_allocation.py -t f+o+s+c+r+b -num 1000000 -range 16-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
 
+
+|Fig. `5.a`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 16-16 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `5.b`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 64-64 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `5.c`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 512-512 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `5.d`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 8192-8192 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+
+|Fig. `5.e`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 16-16 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `5.f`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 64-64 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `5.g`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 512-512 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+|Fig. `5.h`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 8192-8192 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+
+6.a single size
+
+|Fig. `6.a`|`test_fragmentation.py`|`python test_fragmentation.py -t o+s+c+r+x+g -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+
+
+6.b mixed size
+
+|Fig. `6.b`|`test_mixed_fragmentation.py`|`python test_mixed_fragmentation.py -t o+s+c+r+x+g -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
+
+6.c oom
+
+|Fig. `6.c`|`test_oom.py`|`python test_oom.py -t o+s+c+r+x+g -num 100000 -range 4-8192 -runtest -genres -timeout 200 -allocsize 2 -device 0`|
+
+
+7.a.init
+
+|Fig. `7.a.init`|`test_graph_init.py`|`python test_graph_init.py -t o+s+c+r+g -configfile big_config_init.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
+
+|Fig. `7.a`|`test_graph_update.py`|`python test_graph_update.py -t o+s+c+r+g -configfile big_config_update.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
+
+|Fig. `7.a.range`|`test_graph_update.py`|`python test_graph_update.py -t o+s+c+r+g -configfile big_config_update_range.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
+
+
+|Fig. `7.b.init`|`test_graph_expansion_init.py`|`python test_graph_expansion_init.py -t o+s+c+r+g -configfile big_config_init.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
+
+|Fig. `7.b`|`test_graph_expansion.py`|`python test_graph_expansion.py -t o+s+c+r+g -configfile big_config_update.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
+
+|Fig. `7.b.range`|`test_graph_expansion.py`|`python test_graph_expansion.py -t o+s+c+r+g -configfile big_config_update_range.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
 
 ## Allocation Testcases
 ### Single Threaded / Single Warp Allocation Performance
