@@ -8,7 +8,7 @@ Here are the step-by-step instructions necessary to build and test Gallatin.
 # Requirements
 The framework was tested on Ubuntu <20.04.6 LTS>
 * **CUDA Toolkit**
-  * Tested on `12.0` and `12.1`
+  * Tested on `12.1`
     * Windows [Download](https://developer.nvidia.com/cuda-downloads)
     * Arch Linux (`pacman -S cuda`)
 * **C++ Compiler**
@@ -34,7 +34,7 @@ The framework was tested on Ubuntu <20.04.6 LTS>
 * **PDFLatex**
   * Tested with `pdfTeX 3.141592653-2.6-1.40.25`
 
-The framework was tested on an A40 with architecture version `sm_86` and CUDA 12.1. Gallatin should build and run for volta architecture, but this hasn't been tested. Performance may differ on older architectures as hardware accelleartion is not available for some instructions.
+The framework was tested on an A40 with architecture version `sm_86` and CUDA 12.1. Gallatin should build and run for architecture >= volta, but this hasn't been tested. Performance may differ on older architectures as hardware accelleartion is not available for some instructions.
 
 # Determine your architecture code
 
@@ -53,7 +53,7 @@ The only parameter your script takes is your architecture. For example, running 
 
 ```nohup ./install_scripts/download_and_run.sh 86 &```
 
-To test only Gallatin, run ```nohup ./install_scripts/download_and_run_only_gallatin.sh 86 &```. On the A40, this runs in approximately .. minutes
+To test only Gallatin, run ```nohup ./install_scripts/download_and_run_only_gallatin.sh 86 &```. On the A40, this runs in approximately .. minutes.
 
 ## Option B: Run all steps manually
 
@@ -167,40 +167,20 @@ This table shows which test file can be used to generate which plot used in the 
 |Fig. `5.f`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 64-64 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
 |Fig. `5.g`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 512-512 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
 |Fig. `5.h`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 8192-8192 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
-
-6.a single size
-
 |Fig. `6.a`|`test_fragmentation.py`|`python test_fragmentation.py -t o+s+c+r+x+g -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
-
-
-6.b mixed size
-
 |Fig. `6.b`|`test_mixed_fragmentation.py`|`python test_mixed_fragmentation.py -t o+s+c+r+x+g -num 1000000 -range 4-4096 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
-
-6.c oom
-
 |Fig. `6.c`|`test_oom.py`|`python test_oom.py -t o+s+c+r+x+g -num 100000 -range 4-8192 -runtest -genres -timeout 200 -allocsize 2 -device 0`|
-
-
-7.a.init
-
 |Fig. `7.a.init`|`test_graph_init.py`|`python test_graph_init.py -t o+s+c+r+g -configfile big_config_init.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
-
-|Fig. `7.a`|`test_graph_update.py`|`python test_graph_update.py -t o+s+c+r+g -configfile big_config_update.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
-
+|Fig. `7.a`|`test_graph_update.py`|`python test_graph_update.py -t o+s+c+r+g -configfile big_config_update.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|\
 |Fig. `7.a.range`|`test_graph_update.py`|`python test_graph_update.py -t o+s+c+r+g -configfile big_config_update_range.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
-
-
 |Fig. `7.b.init`|`test_graph_expansion_init.py`|`python test_graph_expansion_init.py -t o+s+c+r+g -configfile big_config_init.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
-
 |Fig. `7.b`|`test_graph_expansion.py`|`python test_graph_expansion.py -t o+s+c+r+g -configfile big_config_update.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
-
 |Fig. `7.b.range`|`test_graph_expansion.py`|`python test_graph_expansion.py -t o+s+c+r+g -configfile big_config_update_range.json -runtest -genres -timeout 600 -allocsize 8 -device 0`|
 
 ## Allocation Testcases
 ### Single Threaded / Single Warp Allocation Performance
 To test single threaded or single warp performance, navigate to `tests/alloc_tests` and call the script `test_allocation.py`
-* `python test_allocation.py -t o+s+h+c+r+x -num 10000 -range 4-64 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
+* `python test_allocation.py -t o+s+g+c+r+x -num 10000 -range 4-64 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
   * This will start `10000` threads, each of them will start by allocating `4` Bytes and then increase linearly up to `64` Bytes
 
 This will generate one csv file for each approach with `mean`, `min`, `max`, `median` performance averaged over the number of iterations.
@@ -208,7 +188,7 @@ To generate one file with all approaches already executed, pass option `-genres`
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-num`|`10000`| How many threads/warps to start, e.g. `10000`|
 |`-range`|`4-64`|Which allocation range to test, e.g. `4-64` Bytes|
 |`-iter`|`50`|How often to run test and average over runs, e.g. `50`|
@@ -221,7 +201,7 @@ To generate one file with all approaches already executed, pass option `-genres`
 
 ### Mixed Range Allocation Performance
 To test allocation performance when threads are allocating with different sizes (constrained by a maximum/minimum allocation size), navigate to `tests/alloc_tests` and call the script `test_mixed_allocation.py`
-* `python test_mixed_allocation.py -t o+s+h+c+r+x -num 10000 -range 4-64 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
+* `python test_mixed_allocation.py -t o+s+g+c+r+x -num 10000 -range 4-64 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
 	* This will start `10000` threads, each of them will allocate in the range of `4-64` Bytes
 
 This will generate one csv file for each approach with `mean`, `min`, `max`, `median` performance averaged over the number of iterations.
@@ -229,7 +209,7 @@ To generate one file with all approaches already executed, pass option `-genres`
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-num`|`10000`| How many threads/warps to start, e.g. `10000`|
 |`-range`|`4-64`|Which allocation range to test, e.g. `4-64` Bytes|
 |`-iter`|`50`|How often to run test and average over runs, e.g. `50`|
@@ -242,7 +222,7 @@ To generate one file with all approaches already executed, pass option `-genres`
 
 ### Performance Scaling
 To test performance scaling over a changing number of threads, navigate to `tests/alloc_tests` and call the script `test_scaling.py`
-* `python test_scaling.py -t o+s+h+c+r+x -byterange 4-64 -threadrange 0-10 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
+* `python test_scaling.py -t o+s+g+c+r+x -byterange 4-64 -threadrange 0-10 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
   * This will start with `2⁰` threads up to `2¹⁰` threads, testing all powers of 2 in-between, and for each number of threads test the range `4-64` Bytes
 
 This will generate one csv file for each approach and for each number of threads with `mean`, `min`, `max`, `median` performance averaged over the number of iterations.
@@ -251,7 +231,7 @@ Can also be started with one warp per allocation by passing `-warp`.
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-threadrange`|`0-10`| The range of threads to test, given as a power of 2, e.g. `0-10` would test `2⁰`, `2¹`, ..., `2¹⁰` threads for the given `-byterange`|
 |`-byterange`|`4-64`|Which allocation range to test, e.g. `4-64` Bytes|
 |`-iter`|`50`|How often to run test and average over runs, e.g. `50`|
@@ -266,7 +246,7 @@ Can also be started with one warp per allocation by passing `-warp`.
 ### Memory Fragmentation Testcase
 This testcase tests the fragmentation of the returned addresses of a given allocation by reporting the maximum address range returned by each allocating thread. It also tracks the static maximum over a number of iterations.
 It continues to allocate and free a number of allocations for the number of `-iter` and returns those ranges.
-* `python test_fragmentation.py -t o+s+h+c+r+x -num 10000 -range 4-64 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
+* `python test_fragmentation.py -t o+s+g+c+r+x -num 10000 -range 4-64 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
   * This will start `10000` threads, each of them will start by allocating `4` Bytes and then increase linearly up to `64` Bytes, reporting the current range and static maximum range
 
 This will generate one csv file for each approach with `min address range`, `max address range`, `min address range (static)` and `max address range (max)`.
@@ -274,7 +254,7 @@ To generate one file with all approaches already executed, pass option `-genres`
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-num`|`10000`| Starts `10000` threads|
 |`-range`|`4-64`|Which allocation range to test, e.g. `4-64` Bytes|
 |`-iter`|`50`|How often to run test and average over runs, e.g. `50`|
@@ -286,7 +266,7 @@ To generate one file with all approaches already executed, pass option `-genres`
 
 ### Out-of-Memory Testcase
 Tests out-of-memory behavior for a range of allocation sizes, hence how efficient the memory is utilized. The range will be sampled for each power of 2 in-between the given `-range`
-* `python test_oom.py -t o+s+h+c+r+x -num 10000 -range 4-64 -runtest -timeout 60 -allocsize 8 -device 0`
+* `python test_oom.py -t o+s+g+c+r+x -num 10000 -range 4-64 -runtest -timeout 60 -allocsize 8 -device 0`
   * This starts `10000` allocating threads, tests powers of 2 in the range `4-64` and continues to allocate until out-of-memory is reported, recording the number of iterations in the csv file
 
 This will generate one csv file for each approach and records the number of successful iterations. 
@@ -294,7 +274,7 @@ To generate one file with all approaches already executed, pass option `-genres`
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-num`|`10000`| Starts `10000` threads|
 |`-range`|`4-64`|Which allocation range to test, e.g. `4-64` Bytes|
 |`-runtest`||Pass this flag to execute the testcase and run the approaches|
@@ -319,12 +299,12 @@ The testcase can handle `.mtx` (Matrix Market Format) files, which can be downlo
 
 ### Graph Initialization
 This testcase will test dynamic graph initialization. One has to pass a configfile as described above, the list of graphs to test is given at the top of `test_graph_init.py`. 
-* `python test_graph_init.py -t o+s+h+c+r+x -configfile config_init.json -runtest -timeout 120 -allocsize 8 -device 0`
+* `python test_graph_init.py -t o+s+g+c+r+x -configfile config_init.json -runtest -timeout 120 -allocsize 8 -device 0`
   * Tests initialization performance for all graphs noted in `test_graph_init.py`, configured according to `config_init.json`
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+g+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-configfile`|`config_init.json`|All the configuration details for this testcase, as described above|
 |`-graphstats`||Writes out graph statistics, does **not** run the actual testcase afterwards|
 |`-runtest`||Pass this flag to execute the testcase and run the approaches|
@@ -335,14 +315,14 @@ This testcase will test dynamic graph initialization. One has to pass a configfi
 
 ### Graph Edge Updates
 This testcase will test dynamic graph updates. One has to pass a configfile as described above, the list of graphs to test is given at the top of `test_graph_update.py`. 
-* `python test_graph_update.py -t o+s+h+c+r+x -configfile config_update.json -runtest -timeout 120 -allocsize 8 -device 0`
+* `python test_graph_update.py -t o+s+g+c+r+x -configfile config_update.json -runtest -timeout 120 -allocsize 8 -device 0`
   * Tests edge update performance for all graphs noted in `test_graph_update.py`, configured according to `config_update.json`, this will test random edge updates
-* `python test_graph_update.py -t o+s+h+c+r+x -configfile config_update_range.json -runtest -timeout 120 -allocsize 8 -device 0`
+* `python test_graph_update.py -t o+s+g+c+r+x -configfile config_update_range.json -runtest -timeout 120 -allocsize 8 -device 0`
   * Tests edge update performance for all graphs noted in `test_graph_update.py`, configured according to `config_update_range.json`, this will test pressured edge updates with a given range of source vertices shifted over the graph
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-configfile`|`config_update.json`|All the configuration details for this testcase, as described above|
 |`-graphstats`||Writes out graph statistics, does **not** run the actual testcase afterwards|
 |`-runtest`||Pass this flag to execute the testcase and run the approaches|
@@ -354,11 +334,11 @@ This testcase will test dynamic graph updates. One has to pass a configfile as d
 ## Synthetic Testcases
 ### Register Requirements
 This testcase will report the number of registers required for a respective call to `malloc` or `free`.
-* `python test_registers.py -t o+s+h+c+r+x -runtest -allocsize 8 -device 0`
+* `python test_registers.py -t o+s+g+c+r+x -runtest -allocsize 8 -device 0`
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-runtest`||Pass this flag to execute the testcase and run the approaches|
 |`-genres`||Pass this flag to gather all results from existing csv files into one|
 |`-allocsize`|`8`|How large the manageable memory ares per memory manager should be in `GB`|
@@ -366,11 +346,11 @@ This testcase will report the number of registers required for a respective call
 
 ### Memory Manager Initialization
 This testcase will test how long it takes to initialize each memory manager.
-* `python test_synth_init.py -t o+s+h+c+r+x -runtest -allocsize 8 -device 0`
+* `python test_synth_init.py -t o+s+g+c+r+x -runtest -allocsize 8 -device 0`
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `c` : cuda or `s` : scatteralloc|
 |`-runtest`||Pass this flag to execute the testcase and run the approaches|
 |`-genres`||Pass this flag to gather all results from existing csv files into one|
 |`-allocsize`|`8`|How large the manageable memory ares per memory manager should be in `GB`|
@@ -378,13 +358,13 @@ This testcase will test how long it takes to initialize each memory manager.
 
 ### Workload Testcase
 This testcase will test the classic case of a number of threads producing varying numbers of output elements and compares it to a baseline implemented with an `CUB::ExclusiveSum`.
-* `python test_synth_workload.py -t o+s+h+c+r+x -threadrange 0-10 -range 4-64 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
+* `python test_synth_workload.py -t o+s+g+c+r+x -threadrange 0-10 -range 4-64 -iter 50 -runtest -timeout 60 -allocsize 8 -device 0`
   * This will start with `2⁰` threads up to `2¹⁰` threads, testing all powers of 2 in-between, and for each number of threads test the range `4-64` Bytes
   * The option `-testwrite` will test write performance to this memory area
 
 | Option | Parameter-Example | Description |
 |:---:|:---:|:---:|
-|`-t`|`o+s+h+c+f+r+x+b`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `b` : baseline (CUB exclusive sum) or `c` : cuda or `s` : scatteralloc|
+|`-t`|`o+s+g+c+f+r+x+b`|Specify which frameworks to test, first letter of approach separated by `+`, e.g. `b` : baseline (CUB exclusive sum) or `c` : cuda or `s` : scatteralloc|
 |`-threadrange`|`0-10`| The range of threads to test, given as a power of 2, e.g. `0-10` would test `2⁰`, `2¹`, ..., `2¹⁰` threads for the given `-byterange`|
 |`-range`|`4-64`|Which allocation range to test, e.g. `4-64` Bytes|
 |`-iter`|`50`|How often to run test and average over runs, e.g. `50`|
@@ -394,7 +374,7 @@ This testcase will test the classic case of a number of threads producing varyin
 |`-device`|`0`|Which GPU device to use|
 |`-testwrite`||If parameter is passed, not the allocation performance is measured but the write performance to these allocations|
 
-# Test table TITAN V
+<!-- # Test table TITAN V
 | | Build |Init|Reg.| Perf. 10K | Perf. 100K | Warp 10K | Warp 100K | Mix 10K | Mix 100K | Scale | Frag. 1|OOM|Graph Init.|Graph Up.|Graph Range|Synth.4-64|Synth.4-4096|Synth. Write|
 |:---:|:---:|:---:| :---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 |**CUDA**|:ab:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
@@ -430,4 +410,4 @@ This testcase will test the classic case of a number of threads producing varyin
 |**Oro - P - VL**|:ab:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:||:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
 |**Oro - C - S**|:ab:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:||:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
 |**Oro - C - VA**|:ab:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:||:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:boom:|
-|**Oro - C - VL**|:ab:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:||:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
+|**Oro - C - VL**|:ab:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:||:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:| -->
