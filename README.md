@@ -160,7 +160,6 @@ This table shows which test file can be used to generate which plot used in the 
 |Fig. `5.b`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 64-64 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
 |Fig. `5.c`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 512-512 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
 |Fig. `5.d`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 8192-8192 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
-
 |Fig. `5.e`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 16-16 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
 |Fig. `5.f`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 64-64 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
 |Fig. `5.g`|`test_scaling.py`|`"test_scaling.py -t f+o+s+c+r+g -byterange 512-512 -threadrange 0-20 -iter 50 {0} {1} -timeout 120 -allocsize {2} -device {3}`|
