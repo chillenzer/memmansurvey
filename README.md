@@ -53,7 +53,7 @@ The only parameter your script takes is your architecture. For example, running 
 
 ```nohup ./install_scripts/download_and_run.sh 86 &```
 
-To test only Gallatin, run ```nohup ./install_scripts/download_and_run_only_gallatin.sh 86 &```. On the A40, this runs in approximately .. minutes.
+To test only Gallatin, run ```nohup ./install_scripts/download_and_run_only_gallatin.sh 86 &```. On the A40, this runs in approximately 40 minutes.
 
 ## Option B: Run all steps manually
 
