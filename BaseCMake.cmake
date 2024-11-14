@@ -15,7 +15,14 @@ option(CC80_SYNC "Build with compute capability 8.0 support - SYNC" FALSE)
 option(CC80_ASYNC "Build with compute capability 8.0 support - ASYNC" FALSE)
 option(CC86_SYNC "Build with compute capability 8.6 support - SYNC" FALSE)
 option(CC86_ASYNC "Build with compute capability 860 support - ASYNC" FALSE)
-option(CUDA_BUILD_INFO "Build with kernel statistics and line numbers" TRUE)
+
+# Setting this to TRUE currently breaks parallel builds.
+# This is because the targets are not properly separated in the local CMakeLists.txt.
+# Accordingly, multiple processes building the same file with different defines
+# have a race condition in writing the intermediate files and most of the time
+# they will read an inconsistent source file that they are unable to parse.
+option(CUDA_BUILD_INFO "Build with kernel statistics and line numbers" FALSE)
+
 option(CUDA_BUILD_DEBUG "Build with kernel debug" FALSE)
 option(SYNC_BUILD "Set to true to disable ITS" OFF)
 
