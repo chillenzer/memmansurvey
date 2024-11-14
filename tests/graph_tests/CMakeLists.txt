@@ -194,22 +194,23 @@ endif ()
 # #########################################################################
 # #########################################################################
 if(TEST_SCATTERALLOC)
+  find_package(Boost 1.74 REQUIRED)
 
   add_executable(s_graph_test
   graph_test.cu
  )
+  target_link_libraries(s_graph_test PUBLIC helper PRIVATE Boost::headers)
   target_compile_definitions(s_graph_test PUBLIC TEST_SCATTERALLOC)
   target_include_directories(s_graph_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_graph_test PROPERTY CUDA_ARCHITECTURES OFF)
-  target_link_libraries(s_graph_test helper)
 
   add_executable(s_graph_exp_test
   graph_expansion_test.cu
  )
+  target_link_libraries(s_graph_exp_test PUBLIC helper PRIVATE Boost::headers)
   target_compile_definitions(s_graph_exp_test PUBLIC TEST_SCATTERALLOC)
   target_include_directories(s_graph_exp_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
-  target_link_libraries(s_graph_exp_test helper)
 
 endif ()
 

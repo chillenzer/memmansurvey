@@ -240,6 +240,7 @@ if(TEST_SCATTERALLOC)
   add_executable(s_reg_test
  test_registers.cu
  )
+  target_link_libraries(s_reg_test PRIVATE Boost::headers)
   target_compile_definitions(s_reg_test PUBLIC TEST_SCATTERALLOC)
   target_include_directories(s_reg_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_reg_test PROPERTY CUDA_ARCHITECTURES OFF)

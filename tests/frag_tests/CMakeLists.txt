@@ -169,10 +169,12 @@ endif ()
 # #########################################################################
 # #########################################################################
 if(TEST_SCATTERALLOC)
+  find_package(Boost 1.74 REQUIRED)
 
   add_executable(s_frag_test
   frag_memory_overhead.cu
  )
+  target_link_libraries(s_frag_test PRIVATE Boost::headers)
   target_compile_definitions(s_frag_test PUBLIC TEST_SCATTERALLOC)
   target_include_directories(s_frag_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_frag_test PROPERTY CUDA_ARCHITECTURES OFF)
@@ -180,6 +182,7 @@ if(TEST_SCATTERALLOC)
   add_executable(s_frag_mixed
   frag_memory_mixed.cu
  )
+  target_link_libraries(s_frag_mixed PRIVATE Boost::headers)
   target_compile_definitions(s_frag_mixed PUBLIC TEST_SCATTERALLOC)
   target_include_directories(s_frag_mixed PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_frag_mixed PROPERTY CUDA_ARCHITECTURES OFF)

@@ -148,10 +148,12 @@ endif ()
 # #########################################################################
 # #########################################################################
 if(TEST_SCATTERALLOC)
+  find_package(Boost 1.74 REQUIRED)
 
   add_executable(s_alloc_test
   perf_allocation.cu
  )
+  target_link_libraries(s_alloc_test PRIVATE Boost::headers)
   target_compile_definitions(s_alloc_test PUBLIC TEST_SCATTERALLOC)
   target_include_directories(s_alloc_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
@@ -159,6 +161,7 @@ if(TEST_SCATTERALLOC)
   add_executable(s_mixed_alloc_test
   perf_mixed_allocation.cu
  )
+  target_link_libraries(s_mixed_alloc_test PRIVATE Boost::headers)
   target_compile_definitions(s_mixed_alloc_test PUBLIC TEST_SCATTERALLOC)
   target_include_directories(s_mixed_alloc_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
