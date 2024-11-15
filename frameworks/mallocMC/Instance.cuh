@@ -2,71 +2,62 @@
 
 #include "TestInstance.cuh"
 
-// #define HEAPARGS SCATTER_ALLOC_PAGESIZE, SCATTER_ALLOC_ACCESSBLOCKS,
-// SCATTER_ALLOC_REGIONSIZE, SCATTER_ALLOC_WASTEFACTOR,
-// SCATTER_ALLOC_COALESCING, SCATTER_ALLOC_RESETPAGES #include "heap_impl.cuh"
-// #include "utils.h"
-
-// template __global__ void GPUTools::initHeap<HEAPARGS>(DeviceHeap<HEAPARGS>*
-// heap, void* heapmem, uint memsize);
-
-// struct MemoryManagerScatterAlloc : public MemoryManagerBase
-// {
-// 	explicit MemoryManagerScatterAlloc(size_t instantiation_size =
-// 2048ULL*1024ULL*1024ULL) : 		MemoryManagerBase(instantiation_size)
-// 	{
-// 		cudaMalloc(&heapmem, instantiation_size);
-// 		GPUTools::initHeap<HEAPARGS>(&theHeap, heapmem,
-// instantiation_size);
-// 	}
-// 	~MemoryManagerScatterAlloc()
-// 	{
-// 		cudaFree(heapmem);
-// 	}
-
-// 	virtual __device__ __forceinline__ void* malloc(size_t size) override
-// 	{
-// 		return theHeap.alloc(size);
-// 	}
-
-// 	virtual __device__ __forceinline__ void free(void* ptr) override
-// 	{
-// 		theHeap.dealloc(ptr);
-// 	}
-// 	void* heapmem{nullptr};
-// };
-
-#include "alignmentPolicies/Shrink.hpp"
+#include "adaptAlpaka.hpp"
 #include "mallocMC/mallocMC.hpp"
+#include <array>
 
 namespace MC = mallocMC;
 
-using ScatterAllocator = MC::Allocator<
-    MC::CreationPolicies::Scatter<>, MC::DistributionPolicies::XMallocSIMD<>,
-    MC::OOMPolicies::ReturnNull, MC::ReservePoolPolicies::SimpleCudaMalloc,
-    MC::AlignmentPolicies::Shrink<
-        MC::AlignmentPolicies::ShrinkConfig::DefaultShrinkConfig>>;
+using mallocMC::CreationPolicies::FlatterScatter;
+constexpr uint32_t const blocksize = 2U * 1024U * 1024U;
+constexpr uint32_t const pagesize = 4U * 1024U;
+constexpr uint32_t const wasteFactor = 1U;
 
-struct MemoryManagerScatterAlloc : public MemoryManagerBase {
-  explicit MemoryManagerScatterAlloc(size_t instantiation_size)
+// This happens to also work for the original Scatter algorithm, so we only
+// define one.
+struct FlatterScatterHeapConfig : FlatterScatter<>::Properties::HeapConfig {
+  static constexpr auto accessblocksize = blocksize;
+  static constexpr auto pagesize = ::pagesize;
+  // Only used by original Scatter (but it doesn't hurt FlatterScatter to keep):
+  static constexpr auto regionsize = 16;
+  static constexpr auto wastefactor = wasteFactor;
+};
+
+struct ShrinkConfig {
+  static constexpr auto dataAlignment = 16;
+};
+
+using ScatterAllocator = MC::Allocator<
+    Acc, MC::CreationPolicies::FlatterScatter<FlatterScatterHeapConfig>,
+    MC::DistributionPolicies::Noop, MC::OOMPolicies::ReturnNull,
+    MC::ReservePoolPolicies::AlpakaBuf<Acc>,
+    mallocMC::AlignmentPolicies::Shrink<ShrinkConfig>>;
+
+static auto [dev, queue] = adaptAlpaka();
+
+struct MemoryManagerMallocMC : public MemoryManagerBase {
+  explicit MemoryManagerMallocMC(size_t instantiation_size)
       : MemoryManagerBase(instantiation_size),
-        sa{new ScatterAllocator(instantiation_size)},
+        sa{new ScatterAllocator(dev, queue, instantiation_size)},
         sah{sa->getAllocatorHandle()} {}
 
-  ~MemoryManagerScatterAlloc() {
+  ~MemoryManagerMallocMC() {
     if (!IAMACOPY) {
       delete sa;
     }
   }
-  MemoryManagerScatterAlloc(const MemoryManagerScatterAlloc &src)
+
+  MemoryManagerMallocMC(const MemoryManagerMallocMC &src)
       : sa{src.sa}, sah{src.sah}, IAMACOPY{true} {}
 
   virtual __device__ __forceinline__ void *malloc(size_t size) override {
-    return sah.malloc(size);
+    std::array<std::byte, sizeof(Acc)> fakeAccMemory{};
+    return sah.malloc(*reinterpret_cast<Acc *>(fakeAccMemory.data()), size);
   }
 
   virtual __device__ __forceinline__ void free(void *ptr) override {
-    sah.free(ptr);
+    std::array<std::byte, sizeof(Acc)> fakeAccMemory{};
+    sah.free(*reinterpret_cast<Acc *>(fakeAccMemory.data()), ptr);
   }
 
   ScatterAllocator *sa;
