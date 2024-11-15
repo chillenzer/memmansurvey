@@ -20,7 +20,7 @@ mkdir -p results
 
 echo "Download finished, running experiments"
 
-python3 testLarge.py -mem_size 8 -device 0 -runtest -genres
+python3 testAll.py -mem_size 8 -device 0 -runtest -genres
 
 echo "Building PDF"
 
