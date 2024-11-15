@@ -1,10 +1,6 @@
-
-
-
-if [ $# -eq 0 ]
-  then
-    echo "No arguments supplied - architecture must be specified"
-    exit 1
+if [ $# -eq 0 ]; then
+  echo "No arguments supplied - architecture must be specified"
+  exit 1
 fi
 
 echo "Building for architecture $1"
