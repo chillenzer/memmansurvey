@@ -8,4 +8,4 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/mallocMC" "${CMAKE_CURRENT_BINARY_
 alpaka_add_executable(mallocMC_main main.cu)
 
 target_include_directories(mallocMC_main PRIVATE ${BASE_LOCATION}/include ${CMAKE_CURRENT_SOURCE_DIR}/mallocMC/src/include)
-target_link_libraries(mallocMC_main PRIVATE  alpaka::alpaka)
+target_link_libraries(mallocMC_main PRIVATE alpaka::alpaka)
