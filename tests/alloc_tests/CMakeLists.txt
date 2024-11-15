@@ -9,6 +9,7 @@ include(${BASE_PATH}BaseCMake.cmake)
 option(TEST_CUDA "Test CUDA" True)
 option(TEST_HALLOC "Test Halloc" True)
 option(TEST_SCATTERALLOC "Test ScatterAlloc" True)
+option(TEST_MALLOCMC "Test mallocMc" True)
 option(TEST_OUROBOROS "Test Ouroboros" True)
 option(TEST_FDG "Test FDGMalloc" False)
 option(TEST_REG "Test Register-Efficient" False)
@@ -27,42 +28,34 @@ else()
 endif()
 
 #full run - sync is for the weak
-set(TEST_CUDA ON)
-set(TEST_HALLOC OFF)
-set(TEST_SCATTERALLOC ON)
-set(TEST_OUROBOROS ON)
-set(TEST_FDG ON)
-set(TEST_REG ON)
-set(TEST_XMALLOC ON)
-set(TEST_GAL ON)
+#set(TEST_CUDA ON)
+#set(TEST_HALLOC OFF)
+#set(TEST_SCATTERALLOC ON)
+#set(TEST_MALLOCMC ON)
+#set(TEST_OUROBOROS ON)
+#set(TEST_FDG ON)
+#set(TEST_REG ON)
+#set(TEST_XMALLOC ON)
+#set(TEST_GAL ON)
 
 #debug - test only us
-# set(TEST_CUDA OFF)
-# set(TEST_HALLOC OFF)
-# set(TEST_SCATTERALLOC OFF)
-# set(TEST_OUROBOROS OFF)
-# set(TEST_FDG OFF)
-# set(TEST_REG OFF)
-# set(TEST_XMALLOC OFF)
-# set(TEST_GAL ON)
+set(TEST_CUDA OFF)
+set(TEST_HALLOC OFF)
+set(TEST_SCATTERALLOC OFF)
+set(TEST_MALLOCMC ON)
+set(TEST_OUROBOROS OFF)
+set(TEST_FDG OFF)
+set(TEST_REG OFF)
+set(TEST_XMALLOC OFF)
+set(TEST_GAL OFF)
 
 
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
 # Include Directories
 include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 include_directories(${BASE_PATH}include)
 include_directories(${BASE_PATH}frameworks)
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
-# CUDA
-# #########################################################################
-# #########################################################################
-# #########################################################################
 if(TEST_CUDA)
 
   add_executable(c_alloc_test
@@ -79,13 +72,6 @@ if(TEST_CUDA)
 
 endif()
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
-# Gallatin
-# #########################################################################
-# #########################################################################
-# #########################################################################
 
 if (TEST_GAL)
 
@@ -115,13 +101,6 @@ if (TEST_GAL)
 
 endif()
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
-# Halloc
-# #########################################################################
-# #########################################################################
-# #########################################################################
 if(TEST_HALLOC AND NOT CUDA_BUILD_CC70_ASYNC)
 
   add_executable(h_alloc_test
@@ -140,13 +119,6 @@ if(TEST_HALLOC AND NOT CUDA_BUILD_CC70_ASYNC)
 
 endif ()
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
-# ScatterAlloc
-# #########################################################################
-# #########################################################################
-# #########################################################################
 if(TEST_SCATTERALLOC)
   find_package(Boost 1.74 REQUIRED)
 
@@ -168,13 +140,33 @@ if(TEST_SCATTERALLOC)
 
 endif ()
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
-# XMalloc
-# #########################################################################
-# #########################################################################
-# #########################################################################
+if(TEST_MALLOCMC)
+  find_package(Boost 1.74 REQUIRED)
+  add_subdirectory(
+  ${BASE_PATH}frameworks/mallocMC/mallocMC/alpaka
+ "${CMAKE_CURRENT_BINARY_DIR}/mallocMC/alpaka")
+
+  alpaka_add_executable(m_alloc_test
+  perf_allocation.cu
+ )
+  target_link_libraries(m_alloc_test PRIVATE Boost::headers alpaka::alpaka)
+  target_compile_definitions(m_alloc_test PUBLIC TEST_MALLOCMC)
+  target_include_directories(m_alloc_test
+  PUBLIC
+  ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include
+  ${BASE_PATH}frameworks/mallocMC/mallocMC/alpaka/include)
+  set_property(TARGET m_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+  alpaka_add_executable(m_mixed_alloc_test
+  perf_mixed_allocation.cu
+ )
+  target_link_libraries(m_mixed_alloc_test PRIVATE Boost::headers)
+  target_compile_definitions(m_mixed_alloc_test PUBLIC TEST_MALLOCMC)
+  target_include_directories(m_mixed_alloc_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
+  set_property(TARGET m_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+endif ()
+
 if(TEST_XMALLOC)
 
   add_executable(x_alloc_test
@@ -193,13 +185,6 @@ if(TEST_XMALLOC)
 
 endif ()
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
-# Ouroboros
-# #########################################################################
-# #########################################################################
-# #########################################################################
 if(TEST_OUROBOROS)
 
   add_executable(o_alloc_test_p
@@ -253,10 +238,6 @@ if(TEST_OUROBOROS)
   target_compile_definitions(o_alloc_test_vlc PUBLIC TEST_VIRTUALIZED_LIST)
   target_include_directories(o_alloc_test_vlc PUBLIC ${BASE_PATH}frameworks/ouroboros/repository/include)
   set_property(TARGET o_alloc_test_vlc PROPERTY CUDA_ARCHITECTURES OFF)
-
-  ##########################################################################
-  ##########################################################################
-  ##########################################################################
 
   add_executable(o_mixed_alloc_test_p
  perf_mixed_allocation.cu
@@ -312,13 +293,6 @@ if(TEST_OUROBOROS)
 
 endif ()
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
-# FDGMalloc
-# #########################################################################
-# #########################################################################
-# #########################################################################
 if(TEST_FDG)
 
   add_executable(f_alloc_test
@@ -335,13 +309,6 @@ if(TEST_FDG)
 
 endif()
 
-# #########################################################################
-# #########################################################################
-# #########################################################################
-# Register-Efficient Allocation
-# #########################################################################
-# #########################################################################
-# #########################################################################
 if(TEST_REG)
 
   add_executable(r_alloc_test_a
@@ -385,10 +352,6 @@ if(TEST_REG)
   target_compile_definitions(r_alloc_test_cfm PUBLIC TEST_REGEFF)
   target_compile_definitions(r_alloc_test_cfm PUBLIC TEST_CIRCULAR_FUSED_MULTI)
   set_property(TARGET r_alloc_test_cfm PROPERTY CUDA_ARCHITECTURES OFF)
-
-  ##########################################################################
-  ##########################################################################
-  ##########################################################################
 
   add_executable(r_mixed_alloc_test_a
   perf_mixed_allocation.cu
