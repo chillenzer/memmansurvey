@@ -1,14 +1,14 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <utility>
-#include <algorithm> 
-#include <random>
+#include <algorithm>
 #include <chrono>
+#include <fstream>
+#include <iostream>
+#include <random>
+#include <utility>
+#include <vector>
 
-#include "UtilityFunctions.cuh"
 #include "CudaUniquePointer.cuh"
 #include "PerformanceMeasure.cuh"
+#include "UtilityFunctions.cuh"
 
 // ########################
 #ifdef TEST_CUDA
@@ -41,92 +41,92 @@ using MemoryManager = MemoryManagerFDG;
 const std::string mem_name("FDGMalloc");
 #elif TEST_OUROBOROS
 #include "ouroboros/Instance.cuh"
-	#ifdef TEST_PAGES
-	#ifdef TEST_VIRTUALIZED_ARRAY
-	using MemoryManager = MemoryManagerOuroboros<OuroVAPQ>;
-	const std::string mem_name("Ouroboros-P-VA");
-	#elif TEST_VIRTUALIZED_LIST
-	using MemoryManager = MemoryManagerOuroboros<OuroVLPQ>;
-	const std::string mem_name("Ouroboros-P-VL");
-	#else
-	using MemoryManager = MemoryManagerOuroboros<OuroPQ>;
-	const std::string mem_name("Ouroboros-P-S");
-	#endif
-	#endif
-	#ifdef TEST_CHUNKS
-	#ifdef TEST_VIRTUALIZED_ARRAY
-	using MemoryManager = MemoryManagerOuroboros<OuroVACQ>;
-	const std::string mem_name("Ouroboros-C-VA");
-	#elif TEST_VIRTUALIZED_LIST
-	using MemoryManager = MemoryManagerOuroboros<OuroVLCQ>;
-	const std::string mem_name("Ouroboros-C-VL");
-	#else
-	using MemoryManager = MemoryManagerOuroboros<OuroCQ>;
-	const std::string mem_name("Ouroboros-C-S");
-	#endif
-	#endif
+#ifdef TEST_PAGES
+#ifdef TEST_VIRTUALIZED_ARRAY
+using MemoryManager = MemoryManagerOuroboros<OuroVAPQ>;
+const std::string mem_name("Ouroboros-P-VA");
+#elif TEST_VIRTUALIZED_LIST
+using MemoryManager = MemoryManagerOuroboros<OuroVLPQ>;
+const std::string mem_name("Ouroboros-P-VL");
+#else
+using MemoryManager = MemoryManagerOuroboros<OuroPQ>;
+const std::string mem_name("Ouroboros-P-S");
+#endif
+#endif
+#ifdef TEST_CHUNKS
+#ifdef TEST_VIRTUALIZED_ARRAY
+using MemoryManager = MemoryManagerOuroboros<OuroVACQ>;
+const std::string mem_name("Ouroboros-C-VA");
+#elif TEST_VIRTUALIZED_LIST
+using MemoryManager = MemoryManagerOuroboros<OuroVLCQ>;
+const std::string mem_name("Ouroboros-C-VL");
+#else
+using MemoryManager = MemoryManagerOuroboros<OuroCQ>;
+const std::string mem_name("Ouroboros-C-S");
+#endif
+#endif
 #elif TEST_REGEFF
 #include "regeff/Instance.cuh"
-	#ifdef TEST_ATOMIC
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::AtomicMalloc>;
-	const std::string mem_name("RegEff-A");
-	#elif TEST_ATOMIC_WRAP
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::AWMalloc>;
-	const std::string mem_name("RegEff-AW");
-	#elif TEST_CIRCULAR
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::CMalloc>;
-	const std::string mem_name("RegEff-C");
-	#elif TEST_CIRCULAR_FUSED
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::CFMalloc>;
-	const std::string mem_name("RegEff-CF");
-	#elif TEST_CIRCULAR_MULTI
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::CMMalloc>;
-	const std::string mem_name("RegEff-CM");
-	#elif TEST_CIRCULAR_FUSED_MULTI
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::CFMMalloc>;
-	const std::string mem_name("RegEff-CFM");
-	#endif
+#ifdef TEST_ATOMIC
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::AtomicMalloc>;
+const std::string mem_name("RegEff-A");
+#elif TEST_ATOMIC_WRAP
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::AWMalloc>;
+const std::string mem_name("RegEff-AW");
+#elif TEST_CIRCULAR
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::CMalloc>;
+const std::string mem_name("RegEff-C");
+#elif TEST_CIRCULAR_FUSED
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::CFMalloc>;
+const std::string mem_name("RegEff-CF");
+#elif TEST_CIRCULAR_MULTI
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::CMMalloc>;
+const std::string mem_name("RegEff-CM");
+#elif TEST_CIRCULAR_FUSED_MULTI
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::CFMMalloc>;
+const std::string mem_name("RegEff-CFM");
+#endif
 #endif
 
-int main(int argc, char* argv[])
-{
-	int allocSizeinGB{8};
-	std::string csv_path{"../results/tmp/"};
-	int device{0};
-	if(argc >= 2)
-	{
-		allocSizeinGB = atoi(argv[1]);
-		if(argc >= 3)
-		{
-			csv_path = std::string(argv[2]);
-			if(argc >= 4)
-			{
-				device = atoi(argv[3]);
-			}
-		}
-	}
+int main(int argc, char *argv[]) {
+  int allocSizeinGB{8};
+  std::string csv_path{"../results/tmp/"};
+  int device{0};
+  if (argc >= 2) {
+    allocSizeinGB = atoi(argv[1]);
+    if (argc >= 3) {
+      csv_path = std::string(argv[2]);
+      if (argc >= 4) {
+        device = atoi(argv[3]);
+      }
+    }
+  }
 
-	cudaSetDevice(device);
-	cudaDeviceProp prop;
-	cudaGetDeviceProperties(&prop, device);
-	std::cout << "Going to use " << prop.name << " " << prop.major << "." << prop.minor << "\n";
-	
-	PerfMeasure timing;
-	
-	auto start = std::chrono::steady_clock::now();
-	timing.startMeasurement();
+  cudaSetDevice(device);
+  cudaDeviceProp prop;
+  cudaGetDeviceProperties(&prop, device);
+  std::cout << "Going to use " << prop.name << " " << prop.major << "."
+            << prop.minor << "\n";
 
-	MemoryManager memory_manager(allocSizeinGB * 1024ULL * 1024ULL * 1024ULL);
+  PerfMeasure timing;
 
-	timing.stopMeasurement();
-	CHECK_ERROR(cudaDeviceSynchronize());
-	auto end = std::chrono::steady_clock::now();
+  auto start = std::chrono::steady_clock::now();
+  timing.startMeasurement();
 
-	std::ofstream results;
-	results.open(csv_path.c_str(), std::ios_base::app);
+  MemoryManager memory_manager(allocSizeinGB * 1024ULL * 1024ULL * 1024ULL);
 
-	auto result = timing.generateResult();
-	results << allocSizeinGB * 1024ULL * 1024ULL * 1024ULL << "," << result.mean_ << "," << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+  timing.stopMeasurement();
+  CHECK_ERROR(cudaDeviceSynchronize());
+  auto end = std::chrono::steady_clock::now();
 
-	return 0;
+  std::ofstream results;
+  results.open(csv_path.c_str(), std::ios_base::app);
+
+  auto result = timing.generateResult();
+  results << allocSizeinGB * 1024ULL * 1024ULL * 1024ULL << "," << result.mean_
+          << ","
+          << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                 .count();
+
+  return 0;
 }
