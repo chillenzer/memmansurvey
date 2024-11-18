@@ -129,16 +129,7 @@ endif ()
 
 if(TEST_MALLOCMC)
   find_package(Boost 1.74 REQUIRED)
-
-  option(alpaka_ACC_GPU_CUDA_ENABLE "" ON)
-  option(alpaka_ACC_GPU_CUDA_ONLY_MODE "" ON)
-  set(alpaka_CXX_STANDARD 20)
-  set(alpaka_BUILD_EXAMPLES OFF)
-  set(BUILD_TESTING OFF)
-
-  add_subdirectory(
-  ${BASE_PATH}frameworks/mallocMC/mallocMC/alpaka
- "${CMAKE_CURRENT_BINARY_DIR}/alpaka" EXCLUDE_FROM_ALL)
+  include(${BASE_PATH}/addAlpaka.cmake)
 
   alpaka_add_executable(m_alloc_test
   perf_allocation.cu
