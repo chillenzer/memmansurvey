@@ -9,6 +9,7 @@ include(${BASE_PATH}BaseCMake.cmake)
 option(TEST_CUDA "Test CUDA" True)
 option(TEST_HALLOC "Test Halloc" True)
 option(TEST_SCATTERALLOC "Test ScatterAlloc" True)
+option(TEST_MALLOCMC "Test mallocMC" True)
 option(TEST_OUROBOROS "Test Ouroboros" True)
 option(TEST_FDG "Test FDGMalloc" False)
 option(TEST_REG "Test Register-Efficient" False)
@@ -21,6 +22,7 @@ if(SYNC_BUILD)
 else()
   set(TEST_HALLOC OFF)
   set(TEST_SCATTERALLOC OFF)
+  set(TEST_MALLOCMC OFF)
   set(TEST_FDG OFF)
   set(TEST_REG OFF)
   set(TEST_XMALLOC OFF)
@@ -30,6 +32,7 @@ endif()
 set(TEST_CUDA ON)
 set(TEST_HALLOC OFF)
 set(TEST_SCATTERALLOC ON)
+set(TEST_MALLOCMC ON)
 set(TEST_OUROBOROS ON)
 set(TEST_FDG ON)
 set(TEST_REG ON)
@@ -170,6 +173,29 @@ if(TEST_SCATTERALLOC)
   set_property(TARGET s_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
 
 endif ()
+
+if(TEST_MALLOCMC)
+  find_package(Boost 1.74 REQUIRED)
+  include(${BASE_PATH}/addAlpaka.cmake)
+
+  alpaka_add_executable(m_graph_test
+  graph_test.cu
+ )
+  target_link_libraries(m_graph_test PUBLIC helper PRIVATE Boost::headers alpaka::alpaka)
+  target_compile_definitions(m_graph_test PUBLIC TEST_MALLOCMC)
+  target_include_directories(m_graph_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
+  set_property(TARGET m_graph_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+  alpaka_add_executable(m_graph_exp_test
+  graph_expansion_test.cu
+ )
+  target_link_libraries(m_graph_exp_test PUBLIC helper PRIVATE Boost::headers alpaka::alpaka)
+  target_compile_definitions(m_graph_exp_test PUBLIC TEST_MALLOCMC)
+  target_include_directories(m_graph_exp_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
+  set_property(TARGET m_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+endif ()
+
 
 # Ouroboros
 if(TEST_OUROBOROS)

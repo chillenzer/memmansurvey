@@ -43,6 +43,10 @@ const std::string mem_name("XMALLOC");
 #include "scatteralloc/Instance.cuh"
 using MemoryManager = MemoryManagerScatterAlloc;
 const std::string mem_name("ScatterAlloc");
+#elif TEST_MALLOCMC
+#include "mallocMC/Instance.cuh"
+using MemoryManager = MemoryManagerMallocMC;
+const std::string mem_name("mallocMC");
 #elif TEST_FDG
 #include "fdg/Instance.cuh"
 using MemoryManager = MemoryManagerFDG;
