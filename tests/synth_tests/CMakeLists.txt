@@ -9,6 +9,7 @@ include(${BASE_PATH}BaseCMake.cmake)
 option(TEST_CUDA "Test CUDA" True)
 option(TEST_HALLOC "Test Halloc" True)
 option(TEST_SCATTERALLOC "Test ScatterAlloc" True)
+option(TEST_MALLOCMC "Test mallocMC" True)
 option(TEST_OUROBOROS "Test Ouroboros" True)
 option(TEST_FDG "Test FDGMalloc" False)
 option(TEST_REG "Test Register-Efficient" False)
@@ -21,6 +22,7 @@ if(SYNC_BUILD)
 else()
   set(TEST_HALLOC OFF)
   set(TEST_SCATTERALLOC OFF)
+  set(TEST_MALLOCMC OFF)
   set(TEST_FDG OFF)
   set(TEST_REG OFF)
   set(TEST_XMALLOC OFF)
@@ -32,6 +34,7 @@ endif()
 set(TEST_CUDA ON)
 set(TEST_HALLOC OFF)
 set(TEST_SCATTERALLOC ON)
+set(TEST_MALLOCMC ON)
 set(TEST_OUROBOROS ON)
 set(TEST_FDG ON)
 set(TEST_REG ON)
@@ -196,6 +199,37 @@ if(TEST_SCATTERALLOC)
   set_property(TARGET s_reg_test PROPERTY CUDA_ARCHITECTURES OFF)
 
 endif ()
+
+if(TEST_MALLOCMC)
+  find_package(Boost 1.74 REQUIRED)
+  include(${BASE_PATH}/addAlpaka.cmake)
+
+  alpaka_add_executable(m_synth_test
+  synth_workgeneration.cu
+ )
+  target_link_libraries(m_synth_test PRIVATE Boost::headers alpaka::alpaka)
+  target_compile_definitions(m_synth_test PUBLIC TEST_MALLOCMC)
+  target_include_directories(m_synth_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
+  set_property(TARGET m_synth_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+  alpaka_add_executable(m_init_test
+ synth_init.cu
+ )
+  target_link_libraries(m_init_test PRIVATE Boost::headers alpaka::alpaka)
+  target_compile_definitions(m_init_test PUBLIC TEST_MALLOCMC)
+  target_include_directories(m_init_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
+  set_property(TARGET m_init_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+  alpaka_add_executable(m_reg_test
+ test_registers.cu
+ )
+  target_link_libraries(m_reg_test PRIVATE Boost::headers alpaka::alpaka)
+  target_compile_definitions(m_reg_test PUBLIC TEST_MALLOCMC)
+  target_include_directories(m_reg_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
+  set_property(TARGET m_reg_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+endif ()
+
 
 # Ouroboros
 if(TEST_OUROBOROS)
