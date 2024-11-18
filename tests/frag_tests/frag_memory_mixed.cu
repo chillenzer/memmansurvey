@@ -1,10 +1,10 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <utility> 
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 #include <numeric>
 #include <random>
+#include <utility>
+#include <vector>
 
 #include "UtilityFunctions.cuh"
 
@@ -39,272 +39,271 @@ using MemoryManager = MemoryManagerFDG;
 const std::string mem_name("FDGMalloc");
 #elif TEST_OUROBOROS
 #include "ouroboros/Instance.cuh"
-	#ifdef TEST_PAGES
-	#ifdef TEST_VIRTUALIZED_ARRAY
-	using MemoryManager = MemoryManagerOuroboros<OuroVAPQ>;
-	const std::string mem_name("Ouroboros-P-VA");
-	#elif TEST_VIRTUALIZED_LIST
-	using MemoryManager = MemoryManagerOuroboros<OuroVLPQ>;
-	const std::string mem_name("Ouroboros-P-VL");
-	#else
-	using MemoryManager = MemoryManagerOuroboros<OuroPQ>;
-	const std::string mem_name("Ouroboros-P-S");
-	#endif
-	#endif
-	#ifdef TEST_CHUNKS
-	#ifdef TEST_VIRTUALIZED_ARRAY
-	using MemoryManager = MemoryManagerOuroboros<OuroVACQ>;
-	const std::string mem_name("Ouroboros-C-VA");
-	#elif TEST_VIRTUALIZED_LIST
-	using MemoryManager = MemoryManagerOuroboros<OuroVLCQ>;
-	const std::string mem_name("Ouroboros-C-VL");
-	#else
-	using MemoryManager = MemoryManagerOuroboros<OuroCQ>;
-	const std::string mem_name("Ouroboros-C-S");
-	#endif
-	#endif
+#ifdef TEST_PAGES
+#ifdef TEST_VIRTUALIZED_ARRAY
+using MemoryManager = MemoryManagerOuroboros<OuroVAPQ>;
+const std::string mem_name("Ouroboros-P-VA");
+#elif TEST_VIRTUALIZED_LIST
+using MemoryManager = MemoryManagerOuroboros<OuroVLPQ>;
+const std::string mem_name("Ouroboros-P-VL");
+#else
+using MemoryManager = MemoryManagerOuroboros<OuroPQ>;
+const std::string mem_name("Ouroboros-P-S");
+#endif
+#endif
+#ifdef TEST_CHUNKS
+#ifdef TEST_VIRTUALIZED_ARRAY
+using MemoryManager = MemoryManagerOuroboros<OuroVACQ>;
+const std::string mem_name("Ouroboros-C-VA");
+#elif TEST_VIRTUALIZED_LIST
+using MemoryManager = MemoryManagerOuroboros<OuroVLCQ>;
+const std::string mem_name("Ouroboros-C-VL");
+#else
+using MemoryManager = MemoryManagerOuroboros<OuroCQ>;
+const std::string mem_name("Ouroboros-C-S");
+#endif
+#endif
 #elif TEST_REGEFF
 #include "regeff/Instance.cuh"
-	#ifdef TEST_ATOMIC
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::AtomicMalloc>;
-	const std::string mem_name("RegEff-A");
-	#elif TEST_ATOMIC_WRAP
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::AWMalloc>;
-	const std::string mem_name("RegEff-AW");
-	#elif TEST_CIRCULAR
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::CMalloc>;
-	const std::string mem_name("RegEff-C");
-	#elif TEST_CIRCULAR_FUSED
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::CFMalloc>;
-	const std::string mem_name("RegEff-CF");
-	#elif TEST_CIRCULAR_MULTI
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::CMMalloc>;
-	const std::string mem_name("RegEff-CM");
-	#elif TEST_CIRCULAR_FUSED_MULTI
-	using MemoryManager = MemoryManagerRegEff<RegEffVariants::CFMMalloc>;
-	const std::string mem_name("RegEff-CFM");
-	#endif
+#ifdef TEST_ATOMIC
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::AtomicMalloc>;
+const std::string mem_name("RegEff-A");
+#elif TEST_ATOMIC_WRAP
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::AWMalloc>;
+const std::string mem_name("RegEff-AW");
+#elif TEST_CIRCULAR
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::CMalloc>;
+const std::string mem_name("RegEff-C");
+#elif TEST_CIRCULAR_FUSED
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::CFMalloc>;
+const std::string mem_name("RegEff-CF");
+#elif TEST_CIRCULAR_MULTI
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::CMMalloc>;
+const std::string mem_name("RegEff-CM");
+#elif TEST_CIRCULAR_FUSED_MULTI
+using MemoryManager = MemoryManagerRegEff<RegEffVariants::CFMMalloc>;
+const std::string mem_name("RegEff-CFM");
+#endif
 #endif
 
 template <typename MemoryManagerType, bool warp_based>
-__global__ void d_testAllocation(MemoryManagerType mm, int** verification_ptr, int num_allocations, unsigned int * allocation_sizes)
-{
-	int tid{0};
-	if(warp_based)
-	{
-		tid = (threadIdx.x + blockIdx.x * blockDim.x) / 32;
-		if(threadIdx.x % 32 != 0)
-			return;
-	}
-	else
-	{
-		tid = threadIdx.x + blockIdx.x * blockDim.x;
-	}
-	if(tid >= num_allocations)
-		return;
+__global__ void d_testAllocation(MemoryManagerType mm, int **verification_ptr,
+                                 int num_allocations,
+                                 unsigned int *allocation_sizes) {
+  int tid{0};
+  if (warp_based) {
+    tid = (threadIdx.x + blockIdx.x * blockDim.x) / 32;
+    if (threadIdx.x % 32 != 0)
+      return;
+  } else {
+    tid = threadIdx.x + blockIdx.x * blockDim.x;
+  }
+  if (tid >= num_allocations)
+    return;
 
-	verification_ptr[tid] = reinterpret_cast<int*>(mm.malloc(allocation_sizes[tid]));
+  verification_ptr[tid] =
+      reinterpret_cast<int *>(mm.malloc(allocation_sizes[tid]));
 }
 
 template <typename MemoryManagerType, bool warp_based>
-__global__ void d_testFree(MemoryManagerType mm, int** verification_ptr, int num_allocations)
-{
-	int tid{0};
-	if(warp_based)
-	{
-		tid = (threadIdx.x + blockIdx.x * blockDim.x) / 32;
-		if(threadIdx.x % 32 != 0)
-			return;
-	}
-	else
-	{
-		tid = threadIdx.x + blockIdx.x * blockDim.x;
-	}
-	if(tid >= num_allocations)
-		return;
+__global__ void d_testFree(MemoryManagerType mm, int **verification_ptr,
+                           int num_allocations) {
+  int tid{0};
+  if (warp_based) {
+    tid = (threadIdx.x + blockIdx.x * blockDim.x) / 32;
+    if (threadIdx.x % 32 != 0)
+      return;
+  } else {
+    tid = threadIdx.x + blockIdx.x * blockDim.x;
+  }
+  if (tid >= num_allocations)
+    return;
 
-	mm.free(verification_ptr[tid]);
+  mm.free(verification_ptr[tid]);
 }
 
-__global__ void d_testWriteToMemory(int** verification_ptr, int num_allocations, unsigned int * allocation_sizes)
-{
-	int tid = threadIdx.x + blockIdx.x * blockDim.x;
-	if(tid >= num_allocations)
-		return;
-	
-	auto ptr = verification_ptr[tid];
+__global__ void d_testWriteToMemory(int **verification_ptr, int num_allocations,
+                                    unsigned int *allocation_sizes) {
+  int tid = threadIdx.x + blockIdx.x * blockDim.x;
+  if (tid >= num_allocations)
+    return;
 
-	//this triggers... why?
-	// if (ptr == nullptr){
-	// 	printf("got nullptr\n");
-	// } 
+  auto ptr = verification_ptr[tid];
 
-	auto allocation_size = allocation_sizes[tid];
+  // this triggers... why?
+  //  if (ptr == nullptr){
+  //  	printf("got nullptr\n");
+  //  }
 
-	for(auto i = 0; i < (allocation_size / sizeof(int)); ++i)
-	{
-		ptr[i] = tid;
-	}
+  auto allocation_size = allocation_sizes[tid];
+
+  for (auto i = 0; i < (allocation_size / sizeof(int)); ++i) {
+    ptr[i] = tid;
+  }
 }
 
-__global__ void d_testReadFromMemory(int** verification_ptr, int num_allocations, unsigned int * allocation_sizes)
-{
-	int tid = threadIdx.x + blockIdx.x * blockDim.x;
-	if(tid >= num_allocations)
-		return;
+__global__ void d_testReadFromMemory(int **verification_ptr,
+                                     int num_allocations,
+                                     unsigned int *allocation_sizes) {
+  int tid = threadIdx.x + blockIdx.x * blockDim.x;
+  if (tid >= num_allocations)
+    return;
 
-	auto allocation_size = allocation_sizes[tid];
-	
-	auto ptr = verification_ptr[tid];
+  auto allocation_size = allocation_sizes[tid];
 
-	for(auto i = 0; i < (allocation_size / sizeof(int)); ++i)
-	{
-		if(ptr[i] != tid)
-		{
-			printf("%d | We got a wrong value here! %d vs %d\n", tid, ptr[i], tid);
-			__trap();
-		}
-	}
+  auto ptr = verification_ptr[tid];
+
+  for (auto i = 0; i < (allocation_size / sizeof(int)); ++i) {
+    if (ptr[i] != tid) {
+      printf("%d | We got a wrong value here! %d vs %d\n", tid, ptr[i], tid);
+      __trap();
+    }
+  }
 }
 
-int main(int argc, char* argv[])
-{
-	// Usage: num_allocations size_of_allocation_in_byte print_output
-	unsigned int num_allocations{10000};
-	unsigned int allocation_size_byte_low{16};
-	unsigned int allocation_size_byte{16};
-	int num_iterations {25};
-	bool warp_based{false};
-	bool print_output{true};
-	bool test_oom{false};
-	int allocSizeinGB{8};
-	std::string csv_path{"../results/tmp/"};
-	int device{0};
-	if(argc >= 2)
-	{
-		num_allocations = atoi(argv[1]);
-		if(argc >= 3)
-		{
-			allocation_size_byte = atoi(argv[2]);
-			if(argc >= 4)
-			{
-				num_iterations = atoi(argv[3]);
-				if(argc >= 5)
-				{
-					test_oom = static_cast<bool>(atoi(argv[4]));
-					if(argc >= 6)
-					{
-						csv_path = std::string(argv[5]);
-						if(argc >= 7)
-						{
-							allocSizeinGB = atoi(argv[6]);
-							if(argc >= 8)
-							{
-								device = atoi(argv[7]);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+int main(int argc, char *argv[]) {
+  // Usage: num_allocations size_of_allocation_in_byte print_output
+  unsigned int num_allocations{10000};
+  unsigned int allocation_size_byte_low{16};
+  unsigned int allocation_size_byte{16};
+  int num_iterations{25};
+  bool warp_based{false};
+  bool print_output{true};
+  bool test_oom{false};
+  int allocSizeinGB{8};
+  std::string csv_path{"../results/tmp/"};
+  int device{0};
+  if (argc >= 2) {
+    num_allocations = atoi(argv[1]);
+    if (argc >= 3) {
+      allocation_size_byte = atoi(argv[2]);
+      if (argc >= 4) {
+        num_iterations = atoi(argv[3]);
+        if (argc >= 5) {
+          test_oom = static_cast<bool>(atoi(argv[4]));
+          if (argc >= 6) {
+            csv_path = std::string(argv[5]);
+            if (argc >= 7) {
+              allocSizeinGB = atoi(argv[6]);
+              if (argc >= 8) {
+                device = atoi(argv[7]);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
-	if (allocation_size_byte < allocation_size_byte_low){
-		allocation_size_byte = allocation_size_byte_low;
-	}
+  if (allocation_size_byte < allocation_size_byte_low) {
+    allocation_size_byte = allocation_size_byte_low;
+  }
 
-	allocation_size_byte = Utils::alignment(allocation_size_byte, sizeof(int));
-	allocation_size_byte_low = Utils::alignment(allocation_size_byte_low, sizeof(int));
-	if(print_output)
-		std::cout << "Number of Allocations: " << num_allocations << " | Min Allocation Size: " << allocation_size_byte_low << " | Max Allocation Size: " << allocation_size_byte << std::endl;
+  allocation_size_byte = Utils::alignment(allocation_size_byte, sizeof(int));
+  allocation_size_byte_low =
+      Utils::alignment(allocation_size_byte_low, sizeof(int));
+  if (print_output)
+    std::cout << "Number of Allocations: " << num_allocations
+              << " | Min Allocation Size: " << allocation_size_byte_low
+              << " | Max Allocation Size: " << allocation_size_byte
+              << std::endl;
 
+  auto range = allocation_size_byte - allocation_size_byte_low;
+  auto offset = allocation_size_byte_low;
 
-	auto range = allocation_size_byte - allocation_size_byte_low;
-	auto offset = allocation_size_byte_low;
+  cudaSetDevice(device);
+  cudaDeviceProp prop;
+  cudaGetDeviceProperties(&prop, device);
+  std::cout << "Going to use " << prop.name << " " << prop.major << "."
+            << prop.minor << "\n";
 
-	cudaSetDevice(device);
-	cudaDeviceProp prop;
-	cudaGetDeviceProperties(&prop, device);
-	std::cout << "Going to use " << prop.name << " " << prop.major << "." << prop.minor << "\n";
-	
-	MemoryManager memory_manager(allocSizeinGB * 1024ULL * 1024ULL * 1024ULL);
+  MemoryManager memory_manager(allocSizeinGB * 1024ULL * 1024ULL * 1024ULL);
 
-	int** d_memory{nullptr};
-	CHECK_ERROR(cudaMalloc(&d_memory, sizeof(int*) * num_allocations));
+  int **d_memory{nullptr};
+  CHECK_ERROR(cudaMalloc(&d_memory, sizeof(int *) * num_allocations));
 
+  // addition: holder for alloc size
+  std::vector<unsigned int> allocation_sizes(num_allocations);
+  unsigned int *d_allocation_sizes{nullptr};
 
-	//addition: holder for alloc size
-	std::vector<unsigned int> allocation_sizes(num_allocations);
-	unsigned int * d_allocation_sizes{nullptr};
+  CHECK_ERROR(
+      cudaMalloc(&d_allocation_sizes, sizeof(unsigned int) * num_allocations));
 
-	CHECK_ERROR(cudaMalloc(&d_allocation_sizes, sizeof(unsigned int) * num_allocations));
+  std::ofstream results_frag;
+  results_frag.open(csv_path.c_str(), std::ios_base::app);
 
+  int blockSize{256};
+  int gridSize{Utils::divup<int>(num_allocations, blockSize)};
 
-	std::ofstream results_frag;
-	results_frag.open(csv_path.c_str(), std::ios_base::app);
+  for (auto i = 0; i < num_iterations; ++i) {
 
-	int blockSize {256};
-	int gridSize {Utils::divup<int>(num_allocations, blockSize)};
+    std::cout << "#" << std::flush;
 
-	for(auto i = 0; i < num_iterations; ++i)
-	{
+    std::mt19937 gen(i);
+    std::uniform_real_distribution<> dis(0.0, 1.0);
+    srand(i);
 
-	
-			std::cout << "#" << std::flush;
+    for (auto j = 0; j < num_allocations; j++) {
+      allocation_sizes[j] =
+          Utils::alignment(offset + dis(gen) * range, sizeof(int));
+    }
 
+    CHECK_ERROR(cudaMemcpy(d_allocation_sizes, allocation_sizes.data(),
+                           sizeof(unsigned int) * num_allocations,
+                           cudaMemcpyHostToDevice));
 
-			std::mt19937 gen(i);
-			std::uniform_real_distribution<> dis(0.0, 1.0);
-			srand(i);
+    d_testAllocation<decltype(memory_manager), false><<<gridSize, blockSize>>>(
+        memory_manager, d_memory, num_allocations, d_allocation_sizes);
+    CHECK_ERROR(cudaDeviceSynchronize());
 
-			for (auto j = 0; j < num_allocations; j++){
-				allocation_sizes[j] = Utils::alignment(offset + dis(gen) * range, sizeof(int));
-			}
+    d_testWriteToMemory<<<gridSize, blockSize>>>(d_memory, num_allocations,
+                                                 d_allocation_sizes);
 
-			CHECK_ERROR(cudaMemcpy(d_allocation_sizes, allocation_sizes.data(), sizeof(unsigned int) * num_allocations, cudaMemcpyHostToDevice));
+    CHECK_ERROR(cudaDeviceSynchronize());
 
+    d_testReadFromMemory<<<gridSize, blockSize>>>(d_memory, num_allocations,
+                                                  d_allocation_sizes);
 
+    CHECK_ERROR(cudaDeviceSynchronize());
 
-			d_testAllocation <decltype(memory_manager), false> <<<gridSize, blockSize>>>(memory_manager, d_memory, num_allocations, d_allocation_sizes);
-			CHECK_ERROR(cudaDeviceSynchronize());
+    // Look at address range
+    static int *static_min_ptr{reinterpret_cast<int *>(0xFFFFFFFFFFFFFFFFULL)};
+    static int *static_max_ptr{nullptr};
+    std::vector<int *> verification_pointers(num_allocations);
+    CHECK_ERROR(cudaMemcpy(verification_pointers.data(), d_memory,
+                           sizeof(int *) * verification_pointers.size(),
+                           cudaMemcpyDeviceToHost));
+    auto min_ptr = *min_element(verification_pointers.begin(),
+                                verification_pointers.end());
+    auto max_ptr = *max_element(verification_pointers.begin(),
+                                verification_pointers.end());
+    static_min_ptr = std::min(static_min_ptr, min_ptr);
+    static_max_ptr = std::max(static_max_ptr, max_ptr);
+    // printf("%llu | %llu | %llu MB | %llu | %llu | %llu B\n",
+    // reinterpret_cast<unsigned long long>(min_ptr),
+    // reinterpret_cast<unsigned long long>(max_ptr),
+    // (reinterpret_cast<unsigned long long>(max_ptr) -
+    // reinterpret_cast<unsigned long long>(min_ptr)) / (1024*1024),
+    // reinterpret_cast<unsigned long long>(static_min_ptr),
+    // reinterpret_cast<unsigned long long>(static_max_ptr),
+    // (reinterpret_cast<unsigned long long>(static_max_ptr) -
+    // reinterpret_cast<unsigned long long>(static_min_ptr)));
+    results_frag << ","
+                 << (reinterpret_cast<unsigned long long>(max_ptr) -
+                     reinterpret_cast<unsigned long long>(min_ptr))
+                 << ","
+                 << (reinterpret_cast<unsigned long long>(static_max_ptr) -
+                     reinterpret_cast<unsigned long long>(static_min_ptr));
 
-			d_testWriteToMemory<<<gridSize, blockSize>>>(d_memory, num_allocations, d_allocation_sizes);
+    d_testFree<decltype(memory_manager), false>
+        <<<gridSize, blockSize>>>(memory_manager, d_memory, num_allocations);
+    CHECK_ERROR(cudaDeviceSynchronize());
+  }
 
-			CHECK_ERROR(cudaDeviceSynchronize());
-	
-			d_testReadFromMemory<<<gridSize, blockSize>>>(d_memory, num_allocations, d_allocation_sizes);
-	
-			CHECK_ERROR(cudaDeviceSynchronize());
+  std::cout << std::endl << std::flush;
 
-			// Look at address range
-			static int* static_min_ptr{reinterpret_cast<int*>(0xFFFFFFFFFFFFFFFFULL)};
-			static int* static_max_ptr{nullptr};
-			std::vector<int*> verification_pointers(num_allocations);
-			CHECK_ERROR(cudaMemcpy(verification_pointers.data(), d_memory, sizeof(int*) * verification_pointers.size(), cudaMemcpyDeviceToHost));
-			auto min_ptr = *min_element(verification_pointers.begin(), verification_pointers.end());
-			auto max_ptr = *max_element(verification_pointers.begin(), verification_pointers.end());
-			static_min_ptr = std::min(static_min_ptr, min_ptr);
-			static_max_ptr = std::max(static_max_ptr, max_ptr);
-			// printf("%llu | %llu | %llu MB | %llu | %llu | %llu B\n", 
-			// reinterpret_cast<unsigned long long>(min_ptr), 
-			// reinterpret_cast<unsigned long long>(max_ptr), 
-			// (reinterpret_cast<unsigned long long>(max_ptr) - reinterpret_cast<unsigned long long>(min_ptr)) / (1024*1024),
-			// reinterpret_cast<unsigned long long>(static_min_ptr), 
-			// reinterpret_cast<unsigned long long>(static_max_ptr), 
-			// (reinterpret_cast<unsigned long long>(static_max_ptr) - reinterpret_cast<unsigned long long>(static_min_ptr)));
-			results_frag << "," << (reinterpret_cast<unsigned long long>(max_ptr) - reinterpret_cast<unsigned long long>(min_ptr)) 
-				<< "," 
-				<<(reinterpret_cast<unsigned long long>(static_max_ptr) - reinterpret_cast<unsigned long long>(static_min_ptr));
+  CHECK_ERROR(cudaFree(d_memory));
+  CHECK_ERROR(cudaFree(d_allocation_sizes));
 
-			d_testFree <decltype(memory_manager), false> <<<gridSize, blockSize>>>(memory_manager, d_memory, num_allocations);
-			CHECK_ERROR(cudaDeviceSynchronize());
-		
-	}
-
-	std::cout << std::endl << std::flush;
-
-	CHECK_ERROR(cudaFree(d_memory));
-	CHECK_ERROR(cudaFree(d_allocation_sizes));
-	
-	return 0;
+  return 0;
 }
