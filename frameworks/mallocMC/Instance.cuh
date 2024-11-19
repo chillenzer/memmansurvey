@@ -9,9 +9,9 @@
 namespace MC = mallocMC;
 
 using mallocMC::CreationPolicies::FlatterScatter;
-constexpr uint32_t const blocksize = 2U * 1024U * 1024U;
-constexpr uint32_t const pagesize = 4U * 1024U;
-constexpr uint32_t const wasteFactor = 1U;
+constexpr uint32_t const blocksize = 128U * 1024U * 1024U;
+constexpr uint32_t const pagesize = 128U * 1024U;
+constexpr uint32_t const wasteFactor = 2U;
 
 // This happens to also work for the original Scatter algorithm, so we only
 // define one.
