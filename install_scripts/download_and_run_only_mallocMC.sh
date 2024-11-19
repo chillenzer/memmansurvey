@@ -1,5 +1,3 @@
-#!/usr/bin/env bash -x
-
 if [ $# -eq 0 ]; then
   echo "No arguments supplied - architecture must be specified"
   exit 1
@@ -27,3 +25,4 @@ python3 testMallocMC.py -mem_size 8 -device 0 -runtest -genres
 echo "Building PDF"
 
 ./install_scripts/process_results.sh
+
