@@ -7,15 +7,14 @@ add_subdirectory(gallatin)
 set(BASE_LOCATION "../..")
 include(${BASE_LOCATION}/BaseCMake.cmake)
 
-##########################################################################
 # Include Directories
 include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 include_directories(${BASE_LOCATION}/include)
-include_directories(${BASE_PATH}/externals/cub)
+include(${BASE_PATH}/addCUB.cmake)
 
 add_executable(memorymanagergal_example
-	Instance.cuh
-	main.cu
+ Instance.cuh
+ main.cu
 )
 
 target_link_libraries(memorymanagergal_example gallatin)
