@@ -101,6 +101,10 @@ def main():
             testcases["CUDA"] = os.path.join(
                 build_path, str("c_synth_test") + executable_extension
             )
+        if any("m" in s for s in args.t):
+            testcases["mallocMC"] = os.path.join(
+                build_path, str("m_synth_test") + executable_extension
+            )
         if any("g" in s for s in args.t):
             testcases["Gallatin"] = os.path.join(
                 build_path, str("b_synth_test") + executable_extension
