@@ -21,7 +21,6 @@ struct FlatterScatterHeapConfig : FlatterScatter<>::Properties::HeapConfig {
   // Only used by original Scatter (but it doesn't hurt FlatterScatter to keep):
   static constexpr auto regionsize = 16;
   static constexpr auto wastefactor = wasteFactor;
-  static constexpr bool resetfreedpages = false;
 };
 
 struct ShrinkConfig {
