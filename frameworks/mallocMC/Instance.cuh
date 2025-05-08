@@ -1,67 +1,38 @@
 #pragma once
 
 #include "TestInstance.cuh"
-
-#include "adaptAlpaka.hpp"
-#include "mallocMC/mallocMC.hpp"
-#include <array>
+#include "mallocMC/mallocMC.cuh"
 
 namespace MC = mallocMC;
 
-using mallocMC::CreationPolicies::FlatterScatter;
-constexpr uint32_t const blocksize = 128U * 1024U * 1024U;
-constexpr uint32_t const pagesize = 128U * 1024U;
-constexpr uint32_t const wasteFactor = 2U;
-
-// This happens to also work for the original Scatter algorithm, so we only
-// define one.
-struct FlatterScatterHeapConfig : FlatterScatter<>::Properties::HeapConfig {
-  static constexpr auto accessblocksize = blocksize;
-  static constexpr auto pagesize = ::pagesize;
-  // Only used by original Scatter (but it doesn't hurt FlatterScatter to keep):
-  static constexpr auto regionsize = 16;
-  static constexpr auto wastefactor = wasteFactor;
-};
-
-struct ShrinkConfig {
-  static constexpr auto dataAlignment = 16;
-};
-
-using ScatterAllocator = MC::Allocator<
-    Acc, MC::CreationPolicies::FlatterScatter<FlatterScatterHeapConfig>,
-    MC::DistributionPolicies::Noop, MC::OOMPolicies::ReturnNull,
-    MC::ReservePoolPolicies::AlpakaBuf<Acc>,
-    mallocMC::AlignmentPolicies::Shrink<ShrinkConfig>>;
-
-static auto [dev, queue] = adaptAlpaka();
-
+template <typename T_CreationPolicy = MC::CreationPolicies::FlatterScatter<>>
 struct MemoryManagerMallocMC : public MemoryManagerBase {
   explicit MemoryManagerMallocMC(size_t instantiation_size)
       : MemoryManagerBase(instantiation_size),
-        sa{new ScatterAllocator(dev, queue, instantiation_size)},
-        sah{sa->getAllocatorHandle()} {}
+        hostInfrastructure{new MC::CudaHostInfrastructure<T_CreationPolicy>(
+            instantiation_size)},
+        handle{hostInfrastructure->getAllocatorHandle()} {}
 
   ~MemoryManagerMallocMC() {
     if (!IAMACOPY) {
-      delete sa;
+      delete hostInfrastructure;
     }
   }
 
   MemoryManagerMallocMC(const MemoryManagerMallocMC &src)
-      : sa{src.sa}, sah{src.sah}, IAMACOPY{true} {}
+      : hostInfrastructure{src.hostInfrastructure}, handle{src.handle},
+        IAMACOPY{true} {}
 
   virtual __device__ __forceinline__ void *malloc(size_t size) override {
-    std::array<std::byte, sizeof(Acc)> fakeAccMemory{};
-    return sah.malloc(*reinterpret_cast<Acc *>(fakeAccMemory.data()), size);
+    return handle.malloc(size);
   }
 
   virtual __device__ __forceinline__ void free(void *ptr) override {
-    std::array<std::byte, sizeof(Acc)> fakeAccMemory{};
-    sah.free(*reinterpret_cast<Acc *>(fakeAccMemory.data()), ptr);
+    handle.free(ptr);
   }
 
-  ScatterAllocator *sa;
-  ScatterAllocator::AllocatorHandle sah;
+  MC::CudaHostInfrastructure<T_CreationPolicy> *hostInfrastructure;
+  MC::CudaHostInfrastructure<T_CreationPolicy>::AllocatorHandle handle;
   bool IAMACOPY{false}; // TODO: That is an ugly hack so we don't get a double
                         // free when making a copy for the device
 };
