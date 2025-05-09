@@ -39,5 +39,5 @@ struct MemoryManagerMallocMC : public MemoryManagerBase {
 
 using MemoryManagerMallocMC_FlatterScatter =
     MemoryManagerMallocMC<mallocMC::CreationPolicies::FlatterScatter<>>;
-using MemoryManagerMallocMC_ScatterAlloc =
+using MemoryManagerMallocMC_Scatter =
     MemoryManagerMallocMC<mallocMC::CreationPolicies::Scatter<>>;
