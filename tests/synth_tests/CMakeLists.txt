@@ -82,14 +82,24 @@ if(TEST_MALLOCMC)
   include(${BASE_PATH}/addAlpaka.cmake)
   add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
 
-  add_executable(m_synth_test synth_workgeneration.cu)
-  add_executable(m_init_test synth_init.cu)
-  add_executable(m_reg_test test_registers.cu)
+  list(APPEND targets synth_test init_test reg_test)
+  list(APPEND sources synth_workgeneration.cu synth_init.cu test_registers.cu)
+  list(APPEND creation_policies FlatterScatter Scatter)
 
-  foreach(exe IN ITEMS m_synth_test m_init_test m_reg_test)
-    target_link_libraries(${exe} PRIVATE mallocMC::mallocMC)
-    target_compile_definitions(${exe} PUBLIC TEST_MALLOCMC)
-    set_property(TARGET ${exe} PROPERTY CUDA_ARCHITECTURES OFF)
+  # generates targets for executables like `m_synth_test_f` and so on...
+  foreach(target source IN ZIP_LISTS targets sources)
+    foreach(creation_policy IN LISTS creation_policies)
+      string(SUBSTRING ${creation_policy} 0 1 first_char)
+      string(TOLOWER ${first_char} lower_char)
+      set(target_name "m_${target}_${lower_char}")
+
+      string(TOUPPER ${creation_policy} upper_policy)
+
+      add_executable(${target_name} ${source})
+      target_link_libraries(${target_name} PRIVATE mallocMC::mallocMC)
+      target_compile_definitions(${target_name} PUBLIC TEST_MALLOCMC TEST_${upper_policy})
+      set_property(TARGET ${target_name} PROPERTY CUDA_ARCHITECTURES OFF)
+    endforeach()
   endforeach()
 endif ()
 
