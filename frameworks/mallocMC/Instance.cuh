@@ -3,15 +3,15 @@
 #include "TestInstance.cuh"
 #include "mallocMC/mallocMC.cuh"
 
-namespace MC = mallocMC;
-
-template <typename T_CreationPolicy = MC::CreationPolicies::FlatterScatter<>>
+template <typename T_CreationPolicy =
+              mallocMC::CreationPolicies::FlatterScatter<>>
 struct MemoryManagerMallocMC : public MemoryManagerBase {
   explicit MemoryManagerMallocMC(size_t instantiation_size)
       : MemoryManagerBase(instantiation_size),
-        hostInfrastructure{new MC::CudaHostInfrastructure<T_CreationPolicy>(
-            instantiation_size)},
-        handle{hostInfrastructure->getAllocatorHandle()} {}
+        hostInfrastructure{
+            new mallocMC::CudaHostInfrastructure<T_CreationPolicy>{
+                instantiation_size}},
+        mm{*hostInfrastructure} {}
 
   ~MemoryManagerMallocMC() {
     if (!IAMACOPY) {
@@ -20,19 +20,24 @@ struct MemoryManagerMallocMC : public MemoryManagerBase {
   }
 
   MemoryManagerMallocMC(const MemoryManagerMallocMC &src)
-      : hostInfrastructure{src.hostInfrastructure}, handle{src.handle},
+      : hostInfrastructure{src.hostInfrastructure}, mm{*hostInfrastructure},
         IAMACOPY{true} {}
 
   virtual __device__ __forceinline__ void *malloc(size_t size) override {
-    return handle.malloc(size);
+    return mm.malloc(size);
   }
 
   virtual __device__ __forceinline__ void free(void *ptr) override {
-    handle.free(ptr);
+    mm.free(ptr);
   }
 
-  MC::CudaHostInfrastructure<T_CreationPolicy> *hostInfrastructure;
-  MC::CudaHostInfrastructure<T_CreationPolicy>::AllocatorHandle handle;
+  mallocMC::CudaHostInfrastructure<T_CreationPolicy> *hostInfrastructure;
+  mallocMC::CudaMemoryManager<T_CreationPolicy> mm;
   bool IAMACOPY{false}; // TODO: That is an ugly hack so we don't get a double
                         // free when making a copy for the device
 };
+
+using MemoryManagerMallocMC_FlatterScatter =
+    MemoryManagerMallocMC<mallocMC::CreationPolicies::FlatterScatter<>>;
+using MemoryManagerMallocMC_ScatterAlloc =
+    MemoryManagerMallocMC<mallocMC::CreationPolicies::ScatterAlloc<>>;
