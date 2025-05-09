@@ -80,19 +80,10 @@ endif()
 
 
 if(TEST_MALLOCMC)
-  find_package(Boost 1.74 REQUIRED)
   include(${BASE_PATH}/addAlpaka.cmake)
-  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
-
-  add_executable(m_graph_test graph_test.cu)
-  target_link_libraries(m_graph_test PUBLIC helper PRIVATE Boost::headers mallocMC::mallocMC)
-  target_compile_definitions(m_graph_test PUBLIC TEST_MALLOCMC)
-  set_property(TARGET m_graph_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  add_executable(m_graph_exp_test graph_expansion_test.cu)
-  target_link_libraries(m_graph_exp_test PUBLIC helper PRIVATE Boost::headers mallocMC::mallocMC)
-  target_compile_definitions(m_graph_exp_test PUBLIC TEST_MALLOCMC)
-  set_property(TARGET m_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
+  list(APPEND targets graph_test graph_exp_test)
+  list(APPEND sources graph_test.cu graph_expansion_test.cu)
+  create_mallocMC_executables(targets sources ${BASE_PATH})
 endif ()
 
 # Gallatin

@@ -60,19 +60,10 @@ if(TEST_CUDA)
 endif()
 
 if(TEST_MALLOCMC)
-  find_package(Boost 1.74 REQUIRED)
   include(${BASE_PATH}/addAlpaka.cmake)
-  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
-
-  add_executable(m_alloc_test perf_allocation.cu)
-  target_compile_definitions(m_alloc_test PUBLIC TEST_MALLOCMC)
-  target_link_libraries(m_alloc_test PRIVATE mallocMC::mallocMC Boost::headers)
-  set_property(TARGET m_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  add_executable(m_mixed_alloc_test perf_mixed_allocation.cu)
-  target_link_libraries(m_mixed_alloc_test PRIVATE mallocMC::mallocMC Boost::headers)
-  target_compile_definitions(m_mixed_alloc_test PUBLIC TEST_MALLOCMC)
-  set_property(TARGET m_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
+  list(APPEND targets synth_test init_test reg_test)
+  list(APPEND sources synth_workgeneration.cu synth_init.cu test_registers.cu)
+  create_mallocMC_executables(targets sources ${BASE_PATH})
 endif ()
 
 if (TEST_GAL)

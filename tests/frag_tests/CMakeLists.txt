@@ -63,19 +63,10 @@ if(TEST_CUDA)
 endif()
 
 if(TEST_MALLOCMC)
-  find_package(Boost 1.74 REQUIRED)
   include(${BASE_PATH}/addAlpaka.cmake)
-  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
-
-  add_executable(m_frag_test frag_memory_overhead.cu)
-  target_link_libraries(m_frag_test PRIVATE Boost::headers mallocMC::mallocMC)
-  target_compile_definitions(m_frag_test PUBLIC TEST_MALLOCMC)
-  set_property(TARGET m_frag_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  add_executable(m_frag_mixed frag_memory_mixed.cu)
-  target_link_libraries(m_frag_mixed PRIVATE Boost::headers mallocMC::mallocMC)
-  target_compile_definitions(m_frag_mixed PUBLIC TEST_MALLOCMC)
-  set_property(TARGET m_frag_mixed PROPERTY CUDA_ARCHITECTURES OFF)
+  list(APPEND targets frag_test frag_mixed)
+  list(APPEND sources frag_memory_overhead.cu frag_memory_mixed.cu)
+  create_mallocMC_executables(targets sources ${BASE_PATH})
 endif()
 
 
