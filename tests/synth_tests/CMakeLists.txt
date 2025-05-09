@@ -86,7 +86,7 @@ if(TEST_MALLOCMC)
   add_executable(m_init_test synth_init.cu)
   add_executable(m_reg_test test_registers.cu)
 
-  foreach(exe IN m_synth_test m_init_test m_reg_test)
+  foreach(exe IN ITEMS m_synth_test m_init_test m_reg_test)
     target_link_libraries(${exe} PRIVATE mallocMC::mallocMC)
     target_compile_definitions(${exe} PUBLIC TEST_MALLOCMC)
     set_property(TARGET ${exe} PROPERTY CUDA_ARCHITECTURES OFF)
