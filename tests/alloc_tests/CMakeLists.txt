@@ -61,8 +61,8 @@ endif()
 
 if(TEST_MALLOCMC)
   include(${BASE_PATH}/addAlpaka.cmake)
-  list(APPEND targets synth_test init_test reg_test)
-  list(APPEND sources synth_workgeneration.cu synth_init.cu test_registers.cu)
+  list(APPEND targets alloc_test mixed_alloc_test)
+  list(APPEND sources perf_allocation.cu perf_mixed_allocation.cu)
   create_mallocMC_executables(targets sources ${BASE_PATH})
 endif ()
 
