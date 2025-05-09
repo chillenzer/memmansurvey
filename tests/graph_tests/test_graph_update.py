@@ -123,8 +123,11 @@ def main():
                 build_path, str("c_graph_test") + executable_extension
             )
         if any("m" in s for s in args.t):
-            testcases["mallocMC"] = os.path.join(
-                build_path, str("m_graph_test") + executable_extension
+            testcases["mallocMC-FlatterScatter"] = os.path.join(
+                build_path, str("m_graph_test_f") + executable_extension
+            )
+            testcases["mallocMC-Scatter"] = os.path.join(
+                build_path, str("m_graph_test_s") + executable_extension
             )
         if any("g" in s for s in args.t):
             testcases["Gallatin"] = os.path.join(
@@ -372,4 +375,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
