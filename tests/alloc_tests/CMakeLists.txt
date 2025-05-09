@@ -59,9 +59,25 @@ if(TEST_CUDA)
 
 endif()
 
+if(TEST_MALLOCMC)
+  find_package(Boost 1.74 REQUIRED)
+  include(${BASE_PATH}/addAlpaka.cmake)
+  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
+
+  add_executable(m_alloc_test perf_allocation.cu)
+  target_compile_definitions(m_alloc_test PUBLIC TEST_MALLOCMC)
+  target_link_libraries(m_alloc_test PRIVATE mallocMC::mallocMC Boost::headers)
+  set_property(TARGET m_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+  add_executable(m_mixed_alloc_test perf_mixed_allocation.cu)
+  target_link_libraries(m_mixed_alloc_test PRIVATE mallocMC::mallocMC Boost::headers)
+  target_compile_definitions(m_mixed_alloc_test PUBLIC TEST_MALLOCMC)
+  set_property(TARGET m_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
+endif ()
 
 if (TEST_GAL)
-
+  # If used together with mallocMC,
+  # mallocMC must be set up before because it uses the more recent version of CPM.
   add_executable(b_alloc_test
   perf_allocation.cu
  )
@@ -124,32 +140,6 @@ if(TEST_SCATTERALLOC)
   target_compile_definitions(s_mixed_alloc_test PUBLIC TEST_SCATTERALLOC)
   target_include_directories(s_mixed_alloc_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-endif ()
-
-if(TEST_MALLOCMC)
-  find_package(Boost 1.74 REQUIRED)
-  include(${BASE_PATH}/addAlpaka.cmake)
-
-  alpaka_add_executable(m_alloc_test
-  perf_allocation.cu
- )
-  target_compile_definitions(m_alloc_test PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_alloc_test
-  PUBLIC
-  ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  target_link_libraries(m_alloc_test PRIVATE Boost::headers alpaka::alpaka)
-  set_property(TARGET m_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  alpaka_add_executable(m_mixed_alloc_test
-  perf_mixed_allocation.cu
- )
-  target_link_libraries(m_mixed_alloc_test PRIVATE Boost::headers alpaka::alpaka)
-  target_compile_definitions(m_mixed_alloc_test PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_mixed_alloc_test
-  PUBLIC
-  ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  set_property(TARGET m_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
 
 endif ()
 

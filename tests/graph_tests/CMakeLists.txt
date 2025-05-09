@@ -79,9 +79,27 @@ if(TEST_CUDA)
 endif()
 
 
+if(TEST_MALLOCMC)
+  find_package(Boost 1.74 REQUIRED)
+  include(${BASE_PATH}/addAlpaka.cmake)
+  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
+
+  add_executable(m_graph_test graph_test.cu)
+  target_link_libraries(m_graph_test PUBLIC helper PRIVATE Boost::headers mallocMC::mallocMC)
+  target_compile_definitions(m_graph_test PUBLIC TEST_MALLOCMC)
+  set_property(TARGET m_graph_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+  add_executable(m_graph_exp_test graph_expansion_test.cu)
+  target_link_libraries(m_graph_exp_test PUBLIC helper PRIVATE Boost::headers mallocMC::mallocMC)
+  target_compile_definitions(m_graph_exp_test PUBLIC TEST_MALLOCMC)
+  set_property(TARGET m_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
+endif ()
+
 # Gallatin
 
 if (TEST_GAL)
+  # If used together with mallocMC,
+  # mallocMC must be set up before because it uses the more recent version of CPM.
 
   add_executable(b_graph_test
   graph_test.cu
@@ -173,29 +191,6 @@ if(TEST_SCATTERALLOC)
   set_property(TARGET s_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
 
 endif ()
-
-if(TEST_MALLOCMC)
-  find_package(Boost 1.74 REQUIRED)
-  include(${BASE_PATH}/addAlpaka.cmake)
-
-  alpaka_add_executable(m_graph_test
-  graph_test.cu
- )
-  target_link_libraries(m_graph_test PUBLIC helper PRIVATE Boost::headers alpaka::alpaka)
-  target_compile_definitions(m_graph_test PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_graph_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  set_property(TARGET m_graph_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  alpaka_add_executable(m_graph_exp_test
-  graph_expansion_test.cu
- )
-  target_link_libraries(m_graph_exp_test PUBLIC helper PRIVATE Boost::headers alpaka::alpaka)
-  target_compile_definitions(m_graph_exp_test PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_graph_exp_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  set_property(TARGET m_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-endif ()
-
 
 # Ouroboros
 if(TEST_OUROBOROS)

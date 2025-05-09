@@ -78,9 +78,26 @@ if(TEST_CUDA)
 
 endif()
 
+if(TEST_MALLOCMC)
+  include(${BASE_PATH}/addAlpaka.cmake)
+  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
+
+  add_executable(m_synth_test synth_workgeneration.cu)
+  add_executable(m_init_test synth_init.cu)
+  add_executable(m_reg_test test_registers.cu)
+
+  foreach(exe IN m_synth_test m_init_test m_reg_test)
+    target_link_libraries(${exe} PRIVATE mallocMC::mallocMC)
+    target_compile_definitions(${exe} PUBLIC TEST_MALLOCMC)
+    set_property(TARGET ${exe} PROPERTY CUDA_ARCHITECTURES OFF)
+  endforeach()
+endif ()
+
 # Gallatin
 
 if (TEST_GAL)
+  # If used together with mallocMC,
+  # mallocMC must be set up before because it uses the more recent version of CPM.
 
 
   add_subdirectory(${BASE_PATH}frameworks/gallatin/gallatin ./gallatin)
@@ -201,35 +218,6 @@ if(TEST_SCATTERALLOC)
 
 endif ()
 
-if(TEST_MALLOCMC)
-  find_package(Boost 1.74 REQUIRED)
-  include(${BASE_PATH}/addAlpaka.cmake)
-
-  alpaka_add_executable(m_synth_test
-  synth_workgeneration.cu
- )
-  target_link_libraries(m_synth_test PRIVATE Boost::headers alpaka::alpaka)
-  target_compile_definitions(m_synth_test PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_synth_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  set_property(TARGET m_synth_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  alpaka_add_executable(m_init_test
- synth_init.cu
- )
-  target_link_libraries(m_init_test PRIVATE Boost::headers alpaka::alpaka)
-  target_compile_definitions(m_init_test PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_init_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  set_property(TARGET m_init_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  alpaka_add_executable(m_reg_test
- test_registers.cu
- )
-  target_link_libraries(m_reg_test PRIVATE Boost::headers alpaka::alpaka)
-  target_compile_definitions(m_reg_test PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_reg_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  set_property(TARGET m_reg_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-endif ()
 
 
 # Ouroboros

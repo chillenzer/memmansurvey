@@ -62,10 +62,28 @@ if(TEST_CUDA)
 
 endif()
 
+if(TEST_MALLOCMC)
+  find_package(Boost 1.74 REQUIRED)
+  include(${BASE_PATH}/addAlpaka.cmake)
+  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
+
+  add_executable(m_frag_test frag_memory_overhead.cu)
+  target_link_libraries(m_frag_test PRIVATE Boost::headers mallocMC::mallocMC)
+  target_compile_definitions(m_frag_test PUBLIC TEST_MALLOCMC)
+  set_property(TARGET m_frag_test PROPERTY CUDA_ARCHITECTURES OFF)
+
+  add_executable(m_frag_mixed frag_memory_mixed.cu)
+  target_link_libraries(m_frag_mixed PRIVATE Boost::headers mallocMC::mallocMC)
+  target_compile_definitions(m_frag_mixed PUBLIC TEST_MALLOCMC)
+  set_property(TARGET m_frag_mixed PROPERTY CUDA_ARCHITECTURES OFF)
+endif()
+
 
 # Gallatin
 
 if (TEST_GAL)
+  # If used together with mallocMC,
+  # mallocMC must be set up before because it uses the more recent version of CPM.
 
   add_executable(b_frag_test
   frag_memory_overhead.cu
@@ -149,29 +167,6 @@ if(TEST_SCATTERALLOC)
 
 
 endif ()
-
-if(TEST_MALLOCMC)
-  find_package(Boost 1.74 REQUIRED)
-  include(${BASE_PATH}/addAlpaka.cmake)
-
-  alpaka_add_executable(m_frag_test
-  frag_memory_overhead.cu
- )
-  target_link_libraries(m_frag_test PRIVATE Boost::headers alpaka::alpaka)
-  target_compile_definitions(m_frag_test PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_frag_test PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  set_property(TARGET m_frag_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  add_executable(m_frag_mixed
-  frag_memory_mixed.cu
- )
-  target_link_libraries(m_frag_mixed PRIVATE Boost::headers alpaka::alpaka)
-  target_compile_definitions(m_frag_mixed PUBLIC TEST_MALLOCMC)
-  target_include_directories(m_frag_mixed PUBLIC ${BASE_PATH}frameworks/mallocMC/mallocMC/src/include)
-  set_property(TARGET m_frag_mixed PROPERTY CUDA_ARCHITECTURES OFF)
-
-
-endif()
 
 # Ouroboros
 if(TEST_OUROBOROS)
