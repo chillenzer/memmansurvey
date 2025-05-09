@@ -84,6 +84,10 @@ if(TEST_MALLOCMC)
   list(APPEND targets graph_test graph_exp_test)
   list(APPEND sources graph_test.cu graph_expansion_test.cu)
   create_mallocMC_executables(targets sources ${BASE_PATH})
+  target_link_libraries(m_graph_test_f PRIVATE helper)
+  target_link_libraries(m_graph_test_s PRIVATE helper)
+  target_link_libraries(m_graph_exp_test_f PRIVATE helper)
+  target_link_libraries(m_graph_exp_test_s PRIVATE helper)
 endif ()
 
 # Gallatin
