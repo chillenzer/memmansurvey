@@ -40,4 +40,4 @@ struct MemoryManagerMallocMC : public MemoryManagerBase {
 using MemoryManagerMallocMC_FlatterScatter =
     MemoryManagerMallocMC<mallocMC::CreationPolicies::FlatterScatter<>>;
 using MemoryManagerMallocMC_ScatterAlloc =
-    MemoryManagerMallocMC<mallocMC::CreationPolicies::ScatterAlloc<>>;
+    MemoryManagerMallocMC<mallocMC::CreationPolicies::Scatter<>>;
