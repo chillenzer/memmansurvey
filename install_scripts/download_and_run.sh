@@ -9,7 +9,9 @@ echo "Updating submodules"
 git submodule init
 git submodule update
 
-./install_scripts/graph_curl.sh
+if [[ ! -f ./tests/graph_tests/data/orkut.mtx ]]; then
+  ./install_scripts/graph_curl.sh
+fi
 
 echo "Downloads complete, compiling"
 mkdir -p build
@@ -20,7 +22,7 @@ mkdir -p results
 
 echo "Download finished, running experiments"
 
-python3 testAll.py -mem_size 8 -device 0 -runtest -genres
+yes | python3 testAll.py -mem_size 8 -device 0 -runtest -genres
 
 echo "Building PDF"
 
