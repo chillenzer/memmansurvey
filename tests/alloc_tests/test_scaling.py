@@ -312,12 +312,12 @@ def main():
                         with open(csv_path_alloc, "a", newline="") as csv_file:
                             csv_file.write(
                                 "0.00,0.00,0.00,0.00,0.00,-------------------> Ran longer than "
-                                + str(time_out_val * 1000)
+                                + str(time_out_val)
                             )
                         with open(csv_path_free, "a", newline="") as csv_file:
                             csv_file.write(
                                 "0.00,0.00,0.00,0.00,0.00,-------------------> Ran longer than "
-                                + str(time_out_val * 1000)
+                                + str(time_out_val)
                             )
                     num_threads *= 2
 
