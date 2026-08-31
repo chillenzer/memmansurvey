@@ -42,10 +42,14 @@ if(TEST_CUDA)
   set_property(TARGET c_main PROPERTY CUDA_ARCHITECTURES OFF)
 endif()
 
-if(TEST_MALLOCMC)
+# The chillenzer mallocMC fork is shared by FlatterScatter (TEST_MALLOCMC) and
+# ScatterAlloc (TEST_SCATTERALLOC); add it once.
+if(TEST_MALLOCMC OR TEST_SCATTERALLOC)
   include(addAlpaka.cmake)
   add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
+endif()
 
+if(TEST_MALLOCMC)
   add_executable(m_main src/main.cu)
   target_link_libraries(m_main PRIVATE mallocMC::mallocMC)
   target_compile_definitions(m_main PUBLIC TEST_MALLOCMC)
@@ -86,14 +90,13 @@ if(TEST_HALLOC AND NOT CUDA_BUILD_CC70_ASYNC)
 endif ()
 
 if(TEST_SCATTERALLOC)
-  find_package(Boost 1.74 REQUIRED)
-
+  # ScatterAlloc uses the same chillenzer mallocMC fork as FlatterScatter,
+  # with the Scatter creation policy.
   add_executable(s_main
   src/main.cu
- )
-  target_link_libraries(s_main PRIVATE Boost::headers)
+  )
+  target_link_libraries(s_main PRIVATE mallocMC::mallocMC)
   target_compile_definitions(s_main PUBLIC TEST_SCATTERALLOC)
-  target_include_directories(s_main PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_main PROPERTY CUDA_ARCHITECTURES OFF)
 endif ()
 

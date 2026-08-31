@@ -78,8 +78,14 @@ if(TEST_CUDA)
 
 endif()
 
-if(TEST_MALLOCMC)
+# The chillenzer mallocMC fork is shared by TEST_MALLOCMC (FlatterScatter and
+# Scatter) and TEST_SCATTERALLOC (ScatterAlloc); add it once.
+if(TEST_MALLOCMC OR TEST_SCATTERALLOC)
   include(${BASE_PATH}/addAlpaka.cmake)
+  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
+endif()
+
+if(TEST_MALLOCMC)
   list(APPEND targets synth_test init_test reg_test)
   list(APPEND sources synth_workgeneration.cu synth_init.cu test_registers.cu)
   create_mallocMC_executables(targets sources ${BASE_PATH})
@@ -182,30 +188,26 @@ endif ()
 
 # ScatterAlloc
 if(TEST_SCATTERALLOC)
-  find_package(Boost 1.74 REQUIRED)
-
+  # Uses the same chillenzer mallocMC fork as FlatterScatter (Scatter policy).
   add_executable(s_synth_test
   synth_workgeneration.cu
  )
-  target_link_libraries(s_synth_test PRIVATE Boost::headers)
+  target_link_libraries(s_synth_test PRIVATE mallocMC::mallocMC)
   target_compile_definitions(s_synth_test PUBLIC TEST_SCATTERALLOC)
-  target_include_directories(s_synth_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_synth_test PROPERTY CUDA_ARCHITECTURES OFF)
 
   add_executable(s_init_test
  synth_init.cu
  )
-  target_link_libraries(s_init_test PRIVATE Boost::headers)
+  target_link_libraries(s_init_test PRIVATE mallocMC::mallocMC)
   target_compile_definitions(s_init_test PUBLIC TEST_SCATTERALLOC)
-  target_include_directories(s_init_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_init_test PROPERTY CUDA_ARCHITECTURES OFF)
 
   add_executable(s_reg_test
  test_registers.cu
  )
-  target_link_libraries(s_reg_test PRIVATE Boost::headers)
+  target_link_libraries(s_reg_test PRIVATE mallocMC::mallocMC)
   target_compile_definitions(s_reg_test PUBLIC TEST_SCATTERALLOC)
-  target_include_directories(s_reg_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_reg_test PROPERTY CUDA_ARCHITECTURES OFF)
 
 endif ()

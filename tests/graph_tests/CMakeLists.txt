@@ -79,8 +79,14 @@ if(TEST_CUDA)
 endif()
 
 
-if(TEST_MALLOCMC)
+# The chillenzer mallocMC fork is shared by TEST_MALLOCMC (FlatterScatter and
+# Scatter) and TEST_SCATTERALLOC (ScatterAlloc); add it once.
+if(TEST_MALLOCMC OR TEST_SCATTERALLOC)
   include(${BASE_PATH}/addAlpaka.cmake)
+  add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
+endif()
+
+if(TEST_MALLOCMC)
   list(APPEND targets graph_test graph_exp_test)
   list(APPEND sources graph_test.cu graph_expansion_test.cu)
   create_mallocMC_executables(targets sources ${BASE_PATH})
@@ -167,22 +173,19 @@ endif ()
 
 # ScatterAlloc
 if(TEST_SCATTERALLOC)
-  find_package(Boost 1.74 REQUIRED)
-
+  # Uses the same chillenzer mallocMC fork as FlatterScatter (Scatter policy).
   add_executable(s_graph_test
   graph_test.cu
  )
-  target_link_libraries(s_graph_test PUBLIC helper PRIVATE Boost::headers)
+  target_link_libraries(s_graph_test PUBLIC helper PRIVATE mallocMC::mallocMC)
   target_compile_definitions(s_graph_test PUBLIC TEST_SCATTERALLOC)
-  target_include_directories(s_graph_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_graph_test PROPERTY CUDA_ARCHITECTURES OFF)
 
   add_executable(s_graph_exp_test
   graph_expansion_test.cu
  )
-  target_link_libraries(s_graph_exp_test PUBLIC helper PRIVATE Boost::headers)
+  target_link_libraries(s_graph_exp_test PUBLIC helper PRIVATE mallocMC::mallocMC)
   target_compile_definitions(s_graph_exp_test PUBLIC TEST_SCATTERALLOC)
-  target_include_directories(s_graph_exp_test PUBLIC ${BASE_PATH}frameworks/scatteralloc/repository/src/include/mallocMC)
   set_property(TARGET s_graph_exp_test PROPERTY CUDA_ARCHITECTURES OFF)
 
 endif ()
