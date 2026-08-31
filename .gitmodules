@@ -18,4 +18,4 @@
 	url = https://github.com/saltsystemslab/gallatin
 [submodule "frameworks/mallocMC/mallocMC"]
 	path = frameworks/mallocMC/mallocMC
-	url = https://github.com/alpaka-group/mallocMC
+	url = https://github.com/chillenzer/mallocMC
