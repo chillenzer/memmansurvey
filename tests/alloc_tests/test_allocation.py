@@ -131,10 +131,6 @@ def main():
             testcases["Halloc"] = os.path.join(
                 build_path, str("h_alloc_test") + executable_extension
             )
-        if any("s" in s for s in args.t):
-            testcases["ScatterAlloc"] = os.path.join(
-                build_path, str("s_alloc_test") + executable_extension
-            )
         if any("o" in s for s in args.t):
             testcases["Ouroboros-P-S"] = os.path.join(
                 build_path, str("o_alloc_test_p") + executable_extension

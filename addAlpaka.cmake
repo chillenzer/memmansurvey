@@ -5,8 +5,7 @@ set(alpaka_BUILD_EXAMPLES OFF)
 set(BUILD_TESTING OFF)
 
 macro(create_mallocMC_executables targets sources base_path)
-  # The mallocMC fork must already have been added by the caller, since it is
-  # shared between the mallocMC and ScatterAlloc builds.
+  # The mallocMC fork must already have been added by the caller.
   list(APPEND creation_policies FlatterScatter Scatter)
 
   # generates targets for executables like `m_synth_test_f` and so on...

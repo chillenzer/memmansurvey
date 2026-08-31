@@ -23,9 +23,9 @@ __global__ void d_testFunctions(MemoryManager memory_manager) {
 }
 
 int main(int argc, char *argv[]) {
-  std::cout << "Simple ScatterAlloc Testcase\n";
+  std::cout << "Simple Scatter (mallocMC fork) Testcase\n";
 
-  MemoryManagerScatterAlloc memory_manager{1024 * 1024 * 16};
+  MemoryManagerMallocMC_Scatter memory_manager{1024 * 1024 * 16};
 
   d_testFunctions<<<1, 1>>>(memory_manager);
 

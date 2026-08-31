@@ -8,7 +8,6 @@ include(${BASE_PATH}BaseCMake.cmake)
 # Which frameworks to test
 option(TEST_CUDA "Test CUDA" True)
 option(TEST_HALLOC "Test Halloc" True)
-option(TEST_SCATTERALLOC "Test ScatterAlloc" True)
 option(TEST_MALLOCMC "Test mallocMc" True)
 option(TEST_OUROBOROS "Test Ouroboros" True)
 option(TEST_FDG "Test FDGMalloc" False)
@@ -21,7 +20,6 @@ if(SYNC_BUILD)
   set(TEST_OUROBOROS OFF)
 else()
   set(TEST_HALLOC OFF)
-  set(TEST_SCATTERALLOC OFF)
   set(TEST_FDG OFF)
   set(TEST_REG OFF)
   set(TEST_XMALLOC OFF)
@@ -30,7 +28,6 @@ endif()
 #full run - sync is for the weak
 set(TEST_CUDA ON)
 set(TEST_HALLOC OFF)
-set(TEST_SCATTERALLOC ON)
 set(TEST_MALLOCMC ON)
 set(TEST_OUROBOROS ON)
 set(TEST_FDG ON)
@@ -59,9 +56,8 @@ if(TEST_CUDA)
 
 endif()
 
-# The chillenzer mallocMC fork is shared by TEST_MALLOCMC (FlatterScatter and
-# Scatter) and TEST_SCATTERALLOC (ScatterAlloc); add it once.
-if(TEST_MALLOCMC OR TEST_SCATTERALLOC)
+# The chillenzer mallocMC fork provides FlatterScatter and Scatter.
+if(TEST_MALLOCMC)
   include(${BASE_PATH}/addAlpaka.cmake)
   add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
 endif()
@@ -116,25 +112,6 @@ if(TEST_HALLOC AND NOT CUDA_BUILD_CC70_ASYNC)
   target_compile_definitions(h_mixed_alloc_test PUBLIC TEST_HALLOC)
   target_include_directories(h_mixed_alloc_test PUBLIC ${BASE_PATH}frameworks/halloc/repository/src)
   set_property(TARGET h_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-endif ()
-
-if(TEST_SCATTERALLOC)
-  # ScatterAlloc uses the same chillenzer mallocMC fork as FlatterScatter,
-  # with the Scatter creation policy.
-  add_executable(s_alloc_test
-  perf_allocation.cu
-  )
-  target_link_libraries(s_alloc_test PRIVATE mallocMC::mallocMC)
-  target_compile_definitions(s_alloc_test PUBLIC TEST_SCATTERALLOC)
-  set_property(TARGET s_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  add_executable(s_mixed_alloc_test
-  perf_mixed_allocation.cu
-  )
-  target_link_libraries(s_mixed_alloc_test PRIVATE mallocMC::mallocMC)
-  target_compile_definitions(s_mixed_alloc_test PUBLIC TEST_SCATTERALLOC)
-  set_property(TARGET s_mixed_alloc_test PROPERTY CUDA_ARCHITECTURES OFF)
 
 endif ()
 

@@ -18,9 +18,7 @@
 
 ## ScatterAlloc
 ---
-* Have two variants of that now, the one from GitHub in mallocMC (currently in use) and the base version found in the RegEff Code
-  * Probably should get the Original some time xD
-* Currently it only works correctly in sync-mode
+* Only the mallocMC fork's `Scatter` creation policy is in use now; the standalone scatteralloc framework was removed in its favour.
 
 ## Halloc
 ---

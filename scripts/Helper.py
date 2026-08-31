@@ -14,7 +14,6 @@ colours = {
 	'Ouroboros-P-VA' : 'lightcoral' , 'Ouroboros-P-VL' : 'darkred' , 'Ouroboros-P-S' : 'red' ,
 	'Ouroboros-C-VA' : 'deepskyblue' , 'Ouroboros-C-VL' : 'royalblue' , 'Ouroboros-C-S' : 'navy' ,
 	'CUDA' : 'green' , 
-	'ScatterAlloc' : 'blue' , 
 	'FDGMalloc' : 'gold' , 
 	'RegEff-A' : 'mediumvioletred' , 'RegEff-AW' : 'orchid',
 	'RegEff-C' : 'purple' , 'RegEff-CF' : 'violet' , 'RegEff-CM' : 'indigo' , 'RegEff-CFM' : 'blueviolet'
@@ -28,7 +27,6 @@ linestyles = {
 	'Ouroboros-P-VA' : 'dotted' , 'Ouroboros-P-VL' : 'dashed' , 'Ouroboros-P-S' : 'solid' ,
 	'Ouroboros-C-VA' : 'dotted' , 'Ouroboros-C-VL' : 'dashed' , 'Ouroboros-C-S' : 'solid' ,
 	'CUDA' : 'solid' , 
-	'ScatterAlloc' : 'solid' , 
 	'FDGMalloc' : 'solid' , 
 	'RegEff-A' : 'solid' , 'RegEff-AW' : 'dashed',
 	'RegEff-C' : 'solid' , 'RegEff-CF' : 'dashed' , 'RegEff-CM' : 'dotted' , 'RegEff-CFM' : 'dashed'

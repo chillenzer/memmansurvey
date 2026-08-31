@@ -8,7 +8,6 @@ include(${BASE_PATH}BaseCMake.cmake)
 # Which frameworks to test
 option(TEST_CUDA "Test CUDA" True)
 option(TEST_HALLOC "Test Halloc" True)
-option(TEST_SCATTERALLOC "Test ScatterAlloc" True)
 option(TEST_MALLOCMC "Test mallocMC" True)
 option(TEST_OUROBOROS "Test Ouroboros" True)
 option(TEST_FDG "Test FDGMalloc" False)
@@ -21,7 +20,6 @@ if(SYNC_BUILD)
   set(TEST_OUROBOROS OFF)
 else()
   set(TEST_HALLOC OFF)
-  set(TEST_SCATTERALLOC OFF)
   set(TEST_MALLOCMC OFF)
   set(TEST_FDG OFF)
   set(TEST_REG OFF)
@@ -30,7 +28,6 @@ endif()
 
 set(TEST_CUDA ON)
 set(TEST_HALLOC OFF)
-set(TEST_SCATTERALLOC ON)
 set(TEST_MALLOCMC ON)
 set(TEST_OUROBOROS ON)
 set(TEST_FDG ON)
@@ -62,9 +59,8 @@ if(TEST_CUDA)
 
 endif()
 
-# The chillenzer mallocMC fork is shared by TEST_MALLOCMC (FlatterScatter and
-# Scatter) and TEST_SCATTERALLOC (ScatterAlloc); add it once.
-if(TEST_MALLOCMC OR TEST_SCATTERALLOC)
+# The chillenzer mallocMC fork provides FlatterScatter and Scatter.
+if(TEST_MALLOCMC)
   include(${BASE_PATH}/addAlpaka.cmake)
   add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
 endif()
@@ -138,26 +134,6 @@ if(TEST_XMALLOC)
   target_compile_definitions(x_frag_mixed PUBLIC TEST_XMALLOC)
   target_include_directories(x_frag_mixed PUBLIC ${BASE_PATH}frameworks/xmalloc)
   set_property(TARGET x_frag_mixed PROPERTY CUDA_ARCHITECTURES OFF)
-
-
-endif ()
-
-# ScatterAlloc
-if(TEST_SCATTERALLOC)
-  # Uses the same chillenzer mallocMC fork as FlatterScatter (Scatter policy).
-  add_executable(s_frag_test
-  frag_memory_overhead.cu
- )
-  target_link_libraries(s_frag_test PRIVATE mallocMC::mallocMC)
-  target_compile_definitions(s_frag_test PUBLIC TEST_SCATTERALLOC)
-  set_property(TARGET s_frag_test PROPERTY CUDA_ARCHITECTURES OFF)
-
-  add_executable(s_frag_mixed
-  frag_memory_mixed.cu
- )
-  target_link_libraries(s_frag_mixed PRIVATE mallocMC::mallocMC)
-  target_compile_definitions(s_frag_mixed PUBLIC TEST_SCATTERALLOC)
-  set_property(TARGET s_frag_mixed PROPERTY CUDA_ARCHITECTURES OFF)
 
 
 endif ()

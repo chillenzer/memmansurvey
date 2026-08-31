@@ -8,7 +8,6 @@ set(BASE_PATH "")
 # Which frameworks to test
 option(TEST_CUDA "Test CUDA" ON)
 option(TEST_HALLOC "Test Halloc" ON)
-option(TEST_SCATTERALLOC "Test ScatterAlloc" ON)
 option(TEST_MALLOCMC "Test mallocMC" ON)
 option(TEST_OUROBOROS "Test Ouroboros" ON)
 option(TEST_FDG "Test FDGMalloc" OFF)
@@ -21,7 +20,6 @@ if(SYNC_BUILD)
   set(TEST_OUROBOROS OFF)
 else()
   set(TEST_HALLOC OFF)
-  set(TEST_SCATTERALLOC OFF)
   set(TEST_MALLOCMC OFF)
   set(TEST_FDG OFF)
   set(TEST_REG OFF)
@@ -42,9 +40,8 @@ if(TEST_CUDA)
   set_property(TARGET c_main PROPERTY CUDA_ARCHITECTURES OFF)
 endif()
 
-# The chillenzer mallocMC fork is shared by FlatterScatter (TEST_MALLOCMC) and
-# ScatterAlloc (TEST_SCATTERALLOC); add it once.
-if(TEST_MALLOCMC OR TEST_SCATTERALLOC)
+# The chillenzer mallocMC fork provides FlatterScatter and Scatter.
+if(TEST_MALLOCMC)
   include(addAlpaka.cmake)
   add_subdirectory(${BASE_PATH}frameworks/mallocMC/mallocMC ./mallocMC)
 endif()
@@ -87,17 +84,6 @@ if(TEST_HALLOC AND NOT CUDA_BUILD_CC70_ASYNC)
   target_include_directories(h_main PUBLIC ${BASE_PATH}frameworks/halloc/repository/src)
   set_property(TARGET h_main PROPERTY CUDA_ARCHITECTURES OFF)
 
-endif ()
-
-if(TEST_SCATTERALLOC)
-  # ScatterAlloc uses the same chillenzer mallocMC fork as FlatterScatter,
-  # with the Scatter creation policy.
-  add_executable(s_main
-  src/main.cu
-  )
-  target_link_libraries(s_main PRIVATE mallocMC::mallocMC)
-  target_compile_definitions(s_main PUBLIC TEST_SCATTERALLOC)
-  set_property(TARGET s_main PROPERTY CUDA_ARCHITECTURES OFF)
 endif ()
 
 if(TEST_OUROBOROS)

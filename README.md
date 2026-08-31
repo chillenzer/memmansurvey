@@ -14,12 +14,7 @@ The framework was tested on Ubuntu <20.04.6 LTS>
 * **C++ Compiler**
   * Tested on
     * `gcc 9.4`
-      * Arch Linux (`pacman -S gcc`)
-* **boost** (required for ScatterAlloc)
-  * Tested with boost `1.71`
-    * Windows [Download](https://www.boost.org/users/download/)
-      * Set the installed location in `BaseCMake.cmake`
-    * Arch Linux (`pacman -S boost`)
+       * Arch Linux (`pacman -S gcc`)
 * **CMake**
   * Version `>= 3.18`, tested with `3.27`
     * Windows [Download](https://cmake.org/download/)
@@ -79,7 +74,7 @@ download graphs by running `./install_scripts/graph_curl.sh`. This will download
 
 # 4. Init 
 
-Initialize the repository with `python init.py`. This verifies that boost has been installed.
+Initialize the repository with `python init.py`. This applies the Halloc source fixes.
 
 
 # 5. Build
@@ -133,7 +128,7 @@ The framework **does not perform many sanity checks**, please read the documenta
 |:---:|:---:|:---:| :---:|
 | CUDA Device Allocator 		| :heavy_check_mark: | - | - |
 | XMalloc (2010)				| :x: | [Webpage](http://hdl.handle.net/2142/16137) | - |
-| ScatterAlloc (2012) 			| :x: | [Webpage](https://ieeexplore.ieee.org/document/6339604) | [GitHub - Repository](https://github.com/ax3l/scatteralloc) |
+| ScatterAlloc (2012) 			| :x: | [Webpage](https://ieeexplore.ieee.org/document/6339604) | [GitHub - Repository](https://github.com/chillenzer/mallocMC) |
 | FDGMalloc (2013) 			    | :question: 		 | [Webpage](https://www.gcc.tu-darmstadt.de/media/gcc/papers/Widmer_2013_FDM.pdf) | [Webpage](https://www.gcc.tu-darmstadt.de/home/proj/fdgmalloc/index.en.jsp) |
 | Register Efficient (2014)	    | :heavy_check_mark: | [Webpage](https://diglib.eg.org/bitstream/handle/10.2312/hpg.20141090.019-027/019-027.pdf?sequence=1&isAllowed=y) | [Webpage](http://decibel.fi.muni.cz/~xvinkl/CMalloc/) |
 | Halloc (2014)				    | :x: | [Presentation](http://on-demand.gputechconf.com/gtc/2014/presentations/S4271-halloc-high-throughput-dynamic-memory-allocator.pdf) | [GitHub - Repository](https://github.com/canonizer/halloc) |
